@@ -25,7 +25,7 @@ const BlogSlider = () => {
 	}, []);
 
 	const renderItem = ({ item }) => (
-		<TouchableOpacity style={styles.card} onPress={() => Linking.openURL(item.link)}>
+		<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("post", { post: item })}>
 			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={styles.image} />
 			<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
 				{item.title.rendered}
