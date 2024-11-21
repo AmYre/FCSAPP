@@ -4,7 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 const Stack = createStackNavigator();
 
-export default function AppLayout() {
+export default function TabNavigator() {
 	const openLink = (url: string) => {
 		Linking.openURL(url);
 	};
@@ -24,7 +24,7 @@ export default function AppLayout() {
 					title: "actualité",
 					tabBarIcon: () => (
 						<View>
-							<TouchableOpacity onPress={() => openLink("https://commerces-services.unsa.org/actu/")}>
+							<TouchableOpacity>
 								<Image source={require("../assets/images/news-icon.png")} style={styles.icoNews} />
 							</TouchableOpacity>
 						</View>
@@ -54,13 +54,13 @@ export default function AppLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="medias"
+				name="juri"
 				options={{
-					title: "médias",
+					title: "juridique",
 					tabBarIcon: () => (
 						<View>
-							<TouchableOpacity onPress={() => openLink("https://commerces-services.unsa.org/web-tv/")}>
-								<Image source={require("../assets/images/media-icon.png")} style={styles.icoMedia} />
+							<TouchableOpacity>
+								<Image source={require("../assets/images/juri-icon.png")} style={styles.icoJuri} />
 							</TouchableOpacity>
 						</View>
 					),
@@ -72,11 +72,47 @@ export default function AppLayout() {
 					title: "contact",
 					tabBarIcon: () => (
 						<View>
-							<TouchableOpacity onPress={() => openLink("https://commerces-services.unsa.org/contact/")}>
+							<TouchableOpacity>
 								<Image source={require("../assets/images/contact-icon.png")} style={styles.icoContact} />
 							</TouchableOpacity>
 						</View>
 					),
+				}}
+			/>
+			<Tabs.Screen
+				name="post"
+				options={{
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="section"
+				options={{
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="accords"
+				options={{
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="branches"
+				options={{
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="team"
+				options={{
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="tpe"
+				options={{
+					href: null,
 				}}
 			/>
 		</Tabs>
@@ -122,9 +158,9 @@ const styles = StyleSheet.create({
 		height: 33,
 		resizeMode: "contain",
 	},
-	icoMedia: {
-		width: 45,
-		height: 45,
+	icoJuri: {
+		width: 38,
+		height: 38,
 		resizeMode: "contain",
 	},
 	icoContact: {

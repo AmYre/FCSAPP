@@ -1,17 +1,20 @@
 import { View, ScrollView, TouchableOpacity, Text, Image, StyleSheet, Linking } from "react-native";
 import { FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+
 import Background from "../components/background";
 
 export default function AdhScreen() {
 	const openLink = (url: string) => {
 		Linking.openURL(url);
 	};
+	const navigation = useNavigation();
 
 	return (
 		<Background>
 			<ScrollView contentContainerStyle={styles.scrollContainer} style={styles.container}>
 				<View style={styles.buttonContainer}>
-					<TouchableOpacity style={styles.leftButton} onPress={() => openLink("https://commerces-services.unsa.org/creez-votre-section-unsa/")}>
+					<TouchableOpacity style={styles.leftButton} onPress={() => navigation.navigate("section")}>
 						<FontAwesome6 name="hand-fist" size={38} color="white" style={styles.leftIcon} />
 						<Text style={styles.buttonText}>CRÉER SECTION</Text>
 					</TouchableOpacity>
@@ -20,7 +23,7 @@ export default function AdhScreen() {
 						<Text style={styles.buttonText}>ADHÉSION EN LIGNE</Text>
 					</TouchableOpacity>
 				</View>
-				<TouchableOpacity style={styles.card} onPress={() => Linking.openURL("https://commerces-services.unsa.org/lequipe-unsa-fcs/")}>
+				<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("team")}>
 					<Image source={require("../assets/images/team.jpg")} style={styles.image} />
 					<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
 						Découvrez notre équipe
@@ -30,7 +33,7 @@ export default function AdhScreen() {
 						solutions et vous rencontrer. Nous sommes une équipe de terrain !
 					</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.card} onPress={() => Linking.openURL("https://commerces-services.unsa.org/lequipe-unsa-fcs/")}>
+				<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("branches")}>
 					<Image source={require("../assets/images/branches.jpg")} style={styles.image} />
 					<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
 						Toutes nos Branches
@@ -40,7 +43,7 @@ export default function AdhScreen() {
 						les salaires, la formation, et vos conditions de travail du quotidien.
 					</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.card} onPress={() => Linking.openURL("https://commerces-services.unsa.org/nos-branches/")}>
+				<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("accords")}>
 					<Image source={require("../assets/images/accords.jpg")} style={styles.image} />
 					<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
 						Les accords de Branches
@@ -48,16 +51,6 @@ export default function AdhScreen() {
 					<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
 						Retrouvez toutes les négociations que nous avons obtenu pour vous à travers le temps. Notres boussole, le justice sociale et l’améliorations de vos conditions de travail dans
 						tous les secteurs ou nous sommes représentatifs.
-					</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.card} onPress={() => Linking.openURL("https://commerces-services.unsa.org/nos-experts/")}>
-					<Image source={require("../assets/images/experts.jpg")} style={styles.image} />
-					<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-						Découvrez notre équipe
-					</Text>
-					<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
-						Les membres du bureaux, de la comission administrative et vos référents PAP sont à votre entière disposition pour échangez de vos difficultés, vous accompagner pour trouver des
-						solutions et vous rencontrer. Nous sommes une équipe de terrain !
 					</Text>
 				</TouchableOpacity>
 			</ScrollView>
@@ -74,6 +67,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		gap: 30,
+		paddingBottom: 30,
 	},
 	buttonContainer: {
 		flexDirection: "row",

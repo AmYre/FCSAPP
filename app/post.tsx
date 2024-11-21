@@ -4,7 +4,7 @@ import RenderHtml from "react-native-render-html";
 import { useRoute } from "@react-navigation/native";
 import Background from "../components/background";
 import { useWindowDimensions } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { decode } from "html-entities";
 
 const PostDetail = () => {
@@ -12,7 +12,6 @@ const PostDetail = () => {
 	const { post } = route.params;
 	const { width } = useWindowDimensions();
 	const wpParse = (content) => {
-		// Decode Unicode-escaped characters
 		return content
 			.replace(/\\u003C/g, "<")
 			.replace(/\\u003E/g, ">")
@@ -42,6 +41,10 @@ const PostDetail = () => {
 			color: "#fff",
 			textAlign: "justify",
 		},
+		div: {
+			color: "#fff",
+			textAlign: "justify",
+		},
 	};
 
 	const shareUrls = {
@@ -52,17 +55,15 @@ const PostDetail = () => {
 
 	const sharePost = async (platform) => {
 		try {
-			// Generic share for Instagram and TikTok
 			if (platform === "instagram" || platform === "tiktok") {
 				await Share.share({
 					message: `${post.title.rendered}\n\n${post.link}`,
-					url: post.link, // iOS only
+					url: post.link,
 					title: post.title.rendered,
 				});
 				return;
 			}
 
-			// For other platforms, open their sharing URLs
 			const url = shareUrls[platform];
 			if (url) {
 				// Check if the app can open the URL
@@ -71,10 +72,9 @@ const PostDetail = () => {
 				if (supported) {
 					await Linking.openURL(url);
 				} else {
-					// Fallback to generic share if the platform app isn't installed
 					await Share.share({
 						message: `${post.title.rendered}\n\n${post.link}`,
-						url: post.link, // iOS only
+						url: post.link,
 						title: post.title.rendered,
 					});
 				}
@@ -104,14 +104,20 @@ const PostDetail = () => {
 				</View>
 			</ScrollView>
 			<View style={styles.floatingIcons}>
-				<TouchableOpacity onPress={() => sharePost("facebook")}>
-					<FontAwesome name="facebook" size={30} color="#3b5998" style={styles.icon} />
+				<TouchableOpacity style={styles.iconWrap} onPress={() => sharePost("facebook")}>
+					<FontAwesome name="facebook" color="#3b5998" style={styles.icon} />
 				</TouchableOpacity>
-				<TouchableOpacity onPress={() => sharePost("linkedin")}>
-					<FontAwesome name="linkedin" size={30} color="#0077b5" style={styles.icon} />
+				<TouchableOpacity style={styles.iconWrap} onPress={() => sharePost("linkedin")}>
+					<FontAwesome name="linkedin" color="#0077b5" style={styles.icon} />
 				</TouchableOpacity>
-				<TouchableOpacity onPress={() => sharePost("twitter")}>
-					<FontAwesome name="twitter" size={30} color="#1DA1F2" style={styles.icon} />
+				<TouchableOpacity style={styles.iconWrap} onPress={() => sharePost("twitter")}>
+					<FontAwesome name="twitter" color="#1DA1F2" style={styles.icon} />
+				</TouchableOpacity>
+				<TouchableOpacity style={styles.iconWrap} onPress={() => sharePost("instagram")}>
+					<FontAwesome name="instagram" color="#C13584" style={styles.icon} />
+				</TouchableOpacity>
+				<TouchableOpacity style={styles.iconWrap} onPress={() => sharePost("tiktok")}>
+					<FontAwesome5 name="tiktok" color="#000" style={styles.iconTK} />
 				</TouchableOpacity>
 			</View>
 		</Background>
@@ -144,6 +150,7 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		paddingHorizontal: 38,
+		textAlign: "justify",
 	},
 	floatingIcons: {
 		position: "absolute",
@@ -151,13 +158,22 @@ const styles = StyleSheet.create({
 		right: 10,
 		flexDirection: "column",
 	},
-	icon: {
+	iconWrap: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 10,
 		backgroundColor: "#fff",
 		borderRadius: 100,
+		boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.25)",
+	},
+	icon: {
 		fontSize: 22,
 		padding: 5,
-		marginVertical: 12,
-		boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.25)",
+	},
+	iconTK: {
+		fontSize: 18,
+		padding: 5,
 	},
 });
 

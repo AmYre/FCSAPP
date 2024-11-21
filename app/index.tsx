@@ -1,5 +1,7 @@
-import { View, ScrollView, TouchableOpacity, Text, Image, ImageBackground, StyleSheet, Linking } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, Image, ImageBackground, StyleSheet, Linking, Share } from "react-native";
 import { FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+
 import Background from "../components/background";
 import HeaderVideo from "../components/headerVideo";
 import InterimVideo from "../components/interimVideo";
@@ -9,12 +11,23 @@ export default function HomeScreen() {
 	const openLink = (url: string) => {
 		Linking.openURL(url);
 	};
+	const navigation = useNavigation();
+
+	const openShare = async (message) => {
+		try {
+			await Share.share({
+				message: message,
+			});
+		} catch (error) {
+			alert(error.message);
+		}
+	};
 
 	return (
 		<Background>
 			<ScrollView contentContainerStyle={styles.scrollContainer} style={styles.container}>
 				<View style={styles.buttonContainer}>
-					<TouchableOpacity style={styles.leftButton} onPress={() => openLink("https://commerces-services.unsa.org/creez-votre-section-unsa/")}>
+					<TouchableOpacity style={styles.leftButton} onPress={() => navigation.navigate("section")}>
 						<FontAwesome6 name="hand-fist" size={38} color="white" style={styles.leftIcon} />
 						<Text style={styles.buttonText}>CRÉER SECTION</Text>
 					</TouchableOpacity>
@@ -34,7 +47,7 @@ export default function HomeScreen() {
 					<ImageBackground source={require("../assets/images/tpe-section.jpg")} style={styles.imageBackground}>
 						<View style={styles.overlay}>
 							<Text style={styles.imageTitle}>UNSA TPE</Text>
-							<TouchableOpacity style={styles.buttonTPE} onPress={() => openLink("https://commerces-services.unsa.org/unsa-tpe/")}>
+							<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("tpe")}>
 								<Text style={styles.buttonTPEText}>Je m'informe</Text>
 							</TouchableOpacity>
 						</View>
@@ -45,34 +58,34 @@ export default function HomeScreen() {
 					<ImageBackground source={require("../assets/images/droits.jpg")} style={styles.imageBackground}>
 						<View style={styles.overlay}>
 							<Text style={styles.imageTitle}>VOS DROITS</Text>
-							<TouchableOpacity style={styles.buttonTPE} onPress={() => openLink("https://commerces-services.unsa.org/veille-juridique/")}>
+							<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("juri")}>
 								<Text style={styles.buttonTPEText}>Je m'informe</Text>
 							</TouchableOpacity>
 						</View>
 					</ImageBackground>
 				</View>
 				<View style={styles.sectionSocial}>
-					<Text style={styles.sectionTitleSocial}>Suivez nous</Text>
-					<TouchableOpacity onPress={() => openLink("https://www.facebook.com/unsa.fcs/")}>
+					<Text style={styles.sectionTitleSocial}>Plus fort ensemble !</Text>
+					<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Facebook: https://www.facebook.com/unsa.fcs/")}>
 						<FontAwesome5 style={styles.facebook} name="facebook" size={56} color="white" />
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => openLink("https://www.instagram.com/unsafcs/")}>
+					<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Instagram: https://www.instagram.com/unsafcs/")}>
 						<FontAwesome5 style={styles.insta} name="instagram" size={56} color="white" />
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => openLink("https://www.linkedin.com/in/fatiha-hiraki-775534124/")}>
+					<TouchableOpacity onPress={() => openShare("Découvrez notre application sur LinkedIn: https://www.linkedin.com/in/fatiha-hiraki-775534124/")}>
 						<FontAwesome5 style={styles.linkedin} name="linkedin" size={56} color="white" />
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => openLink("https://x.com/UnsaFcs")}>
+					<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Twitter: https://x.com/UnsaFcs")}>
 						<FontAwesome5 style={styles.twitter} name="twitter" size={56} color="white" />
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => openLink("https://www.tiktok.com/@fcs.unsa")}>
+					<TouchableOpacity onPress={() => openShare("Découvrez notre application sur TikTok: https://www.tiktok.com/@fcs.unsa")}>
 						<FontAwesome5 style={styles.tiktok} name="tiktok" size={56} color="white" />
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => openLink("https://www.youtube.com/channel/UCBcaU-snW_BHsJJvwekDHrA")}>
+					<TouchableOpacity onPress={() => openShare("Découvrez notre application sur YouTube: https://www.youtube.com/channel/UCBcaU-snW_BHsJJvwekDHrA")}>
 						<FontAwesome5 style={styles.youtube} name="youtube" size={56} color="white" />
 					</TouchableOpacity>
 				</View>
-				<View style={styles.sectionPartners}>
+				{/* <View style={styles.sectionPartners}>
 					<Text style={styles.sectionTitle}>Nos Partenaires</Text>
 					<TouchableOpacity onPress={() => openLink("https://www.malakoffhumanis.com/")}>
 						<ImageBackground resizeMode="contain" style={styles.malakoff} source={require("../assets/images/malakoff.jpg")} />
@@ -101,7 +114,7 @@ export default function HomeScreen() {
 							<Image style={styles.ag2r} source={require("../assets/images/ag2r.jpg")} />
 						</TouchableOpacity>
 					</View>
-				</View>
+				</View> */}
 			</ScrollView>
 		</Background>
 	);
@@ -113,6 +126,7 @@ const styles = StyleSheet.create({
 	},
 	scrollContainer: {
 		flexGrow: 1,
+		paddingBottom: 50,
 	},
 	banner: {
 		width: "100%",

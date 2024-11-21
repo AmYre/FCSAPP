@@ -14,7 +14,7 @@ const NewsScreen = () => {
 	useEffect(() => {
 		const fetchBlogPosts = async () => {
 			try {
-				const response = await fetch("https://commerces-services.unsa.org/wp-json/wp/v2/posts?per_page=50");
+				const response = await fetch("https://commerces-services.unsa.org/wp-json/wp/v2/posts?categories=143");
 				const data = await response.json();
 				setBlogPosts(data);
 				setFilteredPosts(data);
@@ -68,7 +68,7 @@ const NewsScreen = () => {
 	return (
 		<Background>
 			<View style={styles.container}>
-				<TextInput style={styles.searchInput} placeholder="Filtrez et recherchez parmis les articles..." value={searchQuery} onChangeText={setSearchQuery} />
+				<TextInput style={styles.searchInput} placeholder="Filtrez et recherchez parmis les accords..." value={searchQuery} onChangeText={setSearchQuery} />
 				{filteredPosts.length > 0 ? (
 					<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
 				) : (
