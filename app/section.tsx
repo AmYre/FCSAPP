@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, ScrollView, TextInput, Alert } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, ScrollView, TextInput, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import Background from "@/components/background";
 
 const SectionScreen = () => {
@@ -18,39 +18,42 @@ const SectionScreen = () => {
 
 	return (
 		<Background>
-			<ScrollView contentContainerStyle={styles.scrollContainer}>
-				<Image source={require("@/assets/images/section.jpg")} style={styles.image} />
-				<Text style={styles.title}>Ce que la législation permet</Text>
-				<Text style={styles.description}>
-					L’article L.2142-1 du Code du Travail permet de créer une section syndicale à partir de 2 adhérents UNSA sur le périmètre du CSE. Dès la création de la section syndicale, l’UNSA
-					procède à la désignation d’un RSS (Représentant de la section syndicale). Condition : le·la RSS doit avoir plus d’un an d’ancienneté et ne pas faire l’objet d’une procédure de
-					licenciement en cours.
-				</Text>
-				<Text style={styles.title}>Des moyens pour agir</Text>
-				<Text style={styles.description}>
-					Les articles L.2142-1-1 à L.2142-1-3 attribuent au RSS UNSA des droits spécifiques, lui permettant de représenter l’UNSA dans l’entreprise : 4 heures mensuelles de délégation pour
-					effectuer sa mission syndicale, statut de salarié.e protégé·e, possibilité d’affichage dans l’entreprise, de distribution de tracts syndicaux et d’organisation de réunions
-					mensuelles avec les adhérents.
-				</Text>
-				<Text style={styles.title}>Des élections CSE à préparer</Text>
-				<Text style={styles.description}>
-					Ce statut de RSS permet de s’implanter en toute protection dans l’entreprise et de préparer les prochaines élections au CSE (Comité social et économique) avec l’aide de l’UNSA.
-					Le·la RSS est obligatoirement invité.e à négocier le protocole d’accord préélectoral. Il peut se faire accompagner d’un représentant UNSA, extérieur à l’entreprise, et mandaté. Si
-					vous obtenez un score d’au moins 10 % des voix, votre section peut désigner un·e délégué·e syndical·e qui pourra négocier et signer des accords, au nom de l’UNSA, le cas échéant.
-				</Text>
-				<View style={styles.form}>
-					<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
-					<Text style={styles.titleForm}>Contactez-nous</Text>
+			<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+				<ScrollView contentContainerStyle={styles.scrollContainer}>
+					<Image source={require("@/assets/images/section.jpg")} style={styles.image} />
+					<Text style={styles.title}>Ce que la législation permet</Text>
+					<Text style={styles.description}>
+						L’article L.2142-1 du Code du Travail permet de créer une section syndicale à partir de 2 adhérents UNSA sur le périmètre du CSE. Dès la création de la section syndicale,
+						l’UNSA procède à la désignation d’un RSS (Représentant de la section syndicale). Condition : le·la RSS doit avoir plus d’un an d’ancienneté et ne pas faire l’objet d’une
+						procédure de licenciement en cours.
+					</Text>
+					<Text style={styles.title}>Des moyens pour agir</Text>
+					<Text style={styles.description}>
+						Les articles L.2142-1-1 à L.2142-1-3 attribuent au RSS UNSA des droits spécifiques, lui permettant de représenter l’UNSA dans l’entreprise : 4 heures mensuelles de délégation
+						pour effectuer sa mission syndicale, statut de salarié.e protégé·e, possibilité d’affichage dans l’entreprise, de distribution de tracts syndicaux et d’organisation de réunions
+						mensuelles avec les adhérents.
+					</Text>
+					<Text style={styles.title}>Des élections CSE à préparer</Text>
+					<Text style={styles.description}>
+						Ce statut de RSS permet de s’implanter en toute protection dans l’entreprise et de préparer les prochaines élections au CSE (Comité social et économique) avec l’aide de l’UNSA.
+						Le·la RSS est obligatoirement invité.e à négocier le protocole d’accord préélectoral. Il peut se faire accompagner d’un représentant UNSA, extérieur à l’entreprise, et mandaté.
+						Si vous obtenez un score d’au moins 10 % des voix, votre section peut désigner un·e délégué·e syndical·e qui pourra négocier et signer des accords, au nom de l’UNSA, le cas
+						échéant.
+					</Text>
+					<View style={styles.form}>
+						<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
+						<Text style={styles.titleForm}>Contactez-nous</Text>
 
-					<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
+						<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
 
-					<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
+						<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
 
-					<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-						<Text style={styles.buttonText}>Envoyer</Text>
-					</TouchableOpacity>
-				</View>
-			</ScrollView>
+						<TouchableOpacity style={styles.button} onPress={handleSubmit}>
+							<Text style={styles.buttonText}>Envoyer</Text>
+						</TouchableOpacity>
+					</View>
+				</ScrollView>
+			</KeyboardAvoidingView>
 		</Background>
 	);
 };

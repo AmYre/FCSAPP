@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Linking, ScrollView } from "react-native";
 import Background from "@/components/background";
 
+import { SafeAreaView } from "react-native-safe-area-context";
+
 const images = {
 	fatiha: require("../assets/images/team/fatiha.jpeg"),
 	toure: require("../assets/images/team/toure.jpg"),
@@ -160,12 +162,14 @@ const TeamMember = ({ member }) => {
 const TeamScreen = () => {
 	return (
 		<Background>
-			<View style={styles.container}>
-				<Text style={styles.mainTitle}>Membres du bureau</Text>
-				<FlatList data={bureauMembers} renderItem={({ item }) => <TeamMember member={item} />} keyExtractor={(item) => item.id} contentContainerStyle={styles.flatListContent} />
-				<Text style={styles.mainTitle}>Commission administrative</Text>
-				<FlatList data={comMembers} renderItem={({ item }) => <TeamMember member={item} />} keyExtractor={(item) => item.id} contentContainerStyle={styles.flatListContent} />
-			</View>
+			<SafeAreaView style={{ flex: 1 }}>
+				<View style={styles.container}>
+					<Text style={styles.mainTitle}>Membres du bureau</Text>
+					<FlatList data={bureauMembers} renderItem={({ item }) => <TeamMember member={item} />} keyExtractor={(item) => item.id} contentContainerStyle={styles.flatListContent} />
+					<Text style={styles.mainTitle}>Commission administrative</Text>
+					<FlatList data={comMembers} renderItem={({ item }) => <TeamMember member={item} />} keyExtractor={(item) => item.id} contentContainerStyle={styles.flatListContent} />
+				</View>
+			</SafeAreaView>
 		</Background>
 	);
 };

@@ -7,6 +7,7 @@ node_modules/
 .expo/
 node_modules/
 android/
+ios/
 dist/
 web-build/
 expo-env.d.ts
@@ -39,3 +40,4 @@ yarn-error.*
 
 app-example
 aerobic-guide-340014-d55cc82d53b6.json
+.vscode

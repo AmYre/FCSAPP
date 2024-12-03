@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { decode } from "html-entities";
 import Background from "@/components/background";
 
+import { SafeAreaView } from "react-native-safe-area-context";
+
 const JuriScreen = () => {
 	const handleCall = () => {
 		const phoneNumber = "+33148188820";
@@ -44,7 +46,7 @@ const JuriScreen = () => {
 	if (loading) {
 		return (
 			<Background>
-				<View style={styles.container}>
+				<View style={styles.loadingContainer}>
 					<ActivityIndicator size="large" color="#0000ff" />
 				</View>
 			</Background>
@@ -53,35 +55,37 @@ const JuriScreen = () => {
 
 	return (
 		<Background>
-			<TouchableOpacity onPress={handleCall}>
-				<Image source={require("@/assets/images/juri.png")} style={styles.mainImage} />
-			</TouchableOpacity>
-			<FlatList
-				data={filteredPosts}
-				renderItem={renderItem}
-				keyExtractor={(item) => item.id.toString()}
-				ListHeaderComponent={
-					<View style={styles.header}>
-						<Text style={styles.mainTitle}>Restez informé sur Vos Droits</Text>
-					</View>
-				}
-				contentContainerStyle={styles.scrollContainer}
-			/>
+			<SafeAreaView style={styles.container}>
+				<FlatList
+					data={filteredPosts}
+					renderItem={renderItem}
+					keyExtractor={(item) => item.id.toString()}
+					ListHeaderComponent={
+						<View style={styles.header}>
+							<Text style={styles.mainTitle}>Restez informé sur Vos Droits</Text>
+						</View>
+					}
+					contentContainerStyle={styles.scrollContainer}
+				/>
+			</SafeAreaView>
 		</Background>
 	);
 };
 
 const styles = StyleSheet.create({
+	loadingContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 	container: {
 		flex: 1,
 	},
-	mainImage: {
-		width: "100%",
-		height: 250,
-		resizeMode: "cover",
-	},
 	scrollContainer: {
 		padding: 40,
+		alignItems: "center",
+		justifyContent: "center",
+		width: "100%",
 	},
 	header: {
 		alignItems: "center",

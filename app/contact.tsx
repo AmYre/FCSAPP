@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Background from "../components/background";
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert, Linking } from "react-native";
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert, Linking, KeyboardAvoidingView, Platform } from "react-native";
 
 export default function ContactScreen() {
 	const [name, setName] = useState("");
@@ -17,22 +17,24 @@ export default function ContactScreen() {
 	};
 
 	return (
-		<SafeAreaView style={styles.wrapper}>
-			<Background>
-				<View style={styles.container}>
-					<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
-					<Text style={styles.title}>Contactez-nous</Text>
+		<Background>
+			<SafeAreaView style={styles.wrapper}>
+				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+					<View style={styles.container}>
+						<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
+						<Text style={styles.title}>Contactez-nous</Text>
 
-					<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
+						<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
 
-					<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
+						<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
 
-					<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-						<Text style={styles.buttonText}>Envoyer</Text>
-					</TouchableOpacity>
-				</View>
-			</Background>
-		</SafeAreaView>
+						<TouchableOpacity style={styles.button} onPress={handleSubmit}>
+							<Text style={styles.buttonText}>Envoyer</Text>
+						</TouchableOpacity>
+					</View>
+				</KeyboardAvoidingView>
+			</SafeAreaView>
+		</Background>
 	);
 }
 

@@ -28,7 +28,7 @@ const BlogSlider = () => {
 		<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("post", { post: item })}>
 			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={styles.image} />
 			<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-				{item.title.rendered}
+				{decode(item.title.rendered.replace(/<[^>]+>/g, ""))}
 			</Text>
 			<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
 				{decode(item.excerpt.rendered.replace(/<[^>]+>/g, ""))}

@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-nati
 import Background from "@/components/background";
 import { FontAwesome } from "@expo/vector-icons";
 
+import { SafeAreaView } from "react-native-safe-area-context";
+
 const HierarchyNode = ({ node, depth = 0 }) => {
 	const [isExpanded, setIsExpanded] = useState(node.name === "UNSA FCS");
 
@@ -13,24 +15,26 @@ const HierarchyNode = ({ node, depth = 0 }) => {
 	};
 
 	return (
-		<View style={[styles.nodeContainer, { paddingLeft: depth * 20 }]}>
-			<TouchableOpacity onPress={toggleExpand} style={styles.node}>
-				{/* Chevron icon */}
-				{hasChildren ? isExpanded ? <FontAwesome name="chevron-down" size={20} color="blue" /> : <FontAwesome name="chevron-right" size={20} color="blue" /> : null}
+		<SafeAreaView style={{ flex: 1 }}>
+			<View style={[styles.nodeContainer, { paddingLeft: depth * 20 }]}>
+				<TouchableOpacity onPress={toggleExpand} style={styles.node}>
+					{/* Chevron icon */}
+					{hasChildren ? isExpanded ? <FontAwesome name="chevron-down" size={20} color="blue" /> : <FontAwesome name="chevron-right" size={20} color="blue" /> : null}
 
-				{/* Node text */}
-				<Text style={[styles.nodeText, { fontWeight: hasChildren ? "bold" : "normal" }]}>{node.name}</Text>
-			</TouchableOpacity>
+					{/* Node text */}
+					<Text style={[styles.nodeText, { fontWeight: hasChildren ? "bold" : "normal" }]}>{node.name}</Text>
+				</TouchableOpacity>
 
-			{/* Render children if expanded */}
-			{hasChildren && isExpanded && (
-				<View style={styles.childContainer}>
-					{node.children.map((child) => (
-						<HierarchyNode key={child.id} node={child} depth={depth + 1} />
-					))}
-				</View>
-			)}
-		</View>
+				{/* Render children if expanded */}
+				{hasChildren && isExpanded && (
+					<View style={styles.childContainer}>
+						{node.children.map((child) => (
+							<HierarchyNode key={child.id} node={child} depth={depth + 1} />
+						))}
+					</View>
+				)}
+			</View>
+		</SafeAreaView>
 	);
 };
 

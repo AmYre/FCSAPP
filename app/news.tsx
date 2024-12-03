@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndi
 import { useNavigation } from "@react-navigation/native";
 import { decode } from "html-entities";
 import Background from "@/components/background";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const NewsScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
@@ -63,20 +64,23 @@ const NewsScreen = () => {
 				</View>
 			</Background>
 		);
-	}
+	} else {
+		return (
+			<Background>
+				<SafeAreaView style={{ flex: 1 }}>
+					<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
 
-	return (
-		<Background>
-			<View style={styles.container}>
-				<TextInput style={styles.searchInput} placeholder="Filtrez et recherchez parmis les articles..." value={searchQuery} onChangeText={setSearchQuery} />
-				{filteredPosts.length > 0 ? (
-					<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
-				) : (
-					<Text style={styles.noResultsText}>Aucun article trouvé</Text>
-				)}
-			</View>
-		</Background>
-	);
+					<View style={styles.container}>
+						{filteredPosts.length > 0 ? (
+							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
+						) : (
+							<Text style={styles.noResultsText}>Aucun article trouvé</Text>
+						)}
+					</View>
+				</SafeAreaView>
+			</Background>
+		);
+	}
 };
 
 const styles = StyleSheet.create({

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Linking, ScrollView, TextInput, Alert } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Linking, ScrollView, TextInput, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Background from "@/components/background";
 
@@ -20,34 +20,36 @@ const TpeScreen = () => {
 
 	return (
 		<Background>
-			<Image source={require("@/assets/images/tpe.png")} style={styles.image} />
-			<ScrollView contentContainerStyle={styles.scrollContainer}>
-				<Text style={styles.mainTitle}>UNSA TPE</Text>
-				<Text style={styles.subTitle}>Du 25 Novembre au 9 Décembre 2024 VOTEZ UNSA</Text>
-				<Text style={styles.description}>
-					À l’UNSA, nous sommes conscients des soucis que peuvent avoir les salariés, tous les salariés. C’est pour ça que nous avons créé UNSA TPE : pour apporter des solutions à plusieurs
-					millions d’employés qui ne bénéficient pas des avantages de ceux qui travaillent dans des grands groupes, comme le CE, ou l’assistance des ressources humaines.
-				</Text>
-				<FontAwesome style={styles.iconPerc} name="percent" />
-				<Text style={styles.cta}>Réductions CE exclusives pour sortir voyager, faire du shopping</Text>
-				<FontAwesome5 style={styles.iconBal} name="balance-scale" />
-				<Text style={styles.cta}>Assistance juridique personnalisée</Text>
-				<Ionicons style={styles.iconInfo} name="information" />
-				<Text style={styles.cta}>Informations sur vos droits et leur évolution</Text>
+			<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+				<Image source={require("@/assets/images/tpe.png")} style={styles.image} />
+				<ScrollView contentContainerStyle={styles.scrollContainer}>
+					<Text style={styles.mainTitle}>UNSA TPE</Text>
+					<Text style={styles.subTitle}>Du 25 Novembre au 9 Décembre 2024 VOTEZ UNSA</Text>
+					<Text style={styles.description}>
+						À l’UNSA, nous sommes conscients des soucis que peuvent avoir les salariés, tous les salariés. C’est pour ça que nous avons créé UNSA TPE : pour apporter des solutions à
+						plusieurs millions d’employés qui ne bénéficient pas des avantages de ceux qui travaillent dans des grands groupes, comme le CE, ou l’assistance des ressources humaines.
+					</Text>
+					<FontAwesome style={styles.iconPerc} name="percent" />
+					<Text style={styles.cta}>Réductions CE exclusives pour sortir voyager, faire du shopping</Text>
+					<FontAwesome5 style={styles.iconBal} name="balance-scale" />
+					<Text style={styles.cta}>Assistance juridique personnalisée</Text>
+					<Ionicons style={styles.iconInfo} name="information" />
+					<Text style={styles.cta}>Informations sur vos droits et leur évolution</Text>
 
-				<View style={styles.form}>
-					<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
-					<Text style={styles.titleForm}>Contactez-nous</Text>
+					<View style={styles.form}>
+						<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
+						<Text style={styles.titleForm}>Contactez-nous</Text>
 
-					<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
+						<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
 
-					<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
+						<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
 
-					<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-						<Text style={styles.buttonText}>Envoyer</Text>
-					</TouchableOpacity>
-				</View>
-			</ScrollView>
+						<TouchableOpacity style={styles.button} onPress={handleSubmit}>
+							<Text style={styles.buttonText}>Envoyer</Text>
+						</TouchableOpacity>
+					</View>
+				</ScrollView>
+			</KeyboardAvoidingView>
 		</Background>
 	);
 };

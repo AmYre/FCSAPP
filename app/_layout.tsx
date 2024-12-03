@@ -22,24 +22,14 @@ export default function TabNavigator() {
 				name="news"
 				options={{
 					title: "actualité",
-					tabBarIcon: () => (
-						<View>
-							<TouchableOpacity>
-								<Image source={require("../assets/images/news-icon.png")} style={styles.icoNews} />
-							</TouchableOpacity>
-						</View>
-					),
+					tabBarIcon: () => <Image source={require("../assets/images/news-icon.png")} style={styles.icoNews} />,
 				}}
 			/>
 			<Tabs.Screen
 				name="adh"
 				options={{
 					title: "adhérents",
-					tabBarIcon: () => (
-						<View>
-							<Image source={require("../assets/images/adh-icon.png")} style={styles.ico} />
-						</View>
-					),
+					tabBarIcon: () => <Image source={require("../assets/images/adh-icon.png")} style={styles.ico} />,
 				}}
 			/>
 			<Tabs.Screen
@@ -57,26 +47,14 @@ export default function TabNavigator() {
 				name="juri"
 				options={{
 					title: "juridique",
-					tabBarIcon: () => (
-						<View>
-							<TouchableOpacity>
-								<Image source={require("../assets/images/juri-icon.png")} style={styles.icoJuri} />
-							</TouchableOpacity>
-						</View>
-					),
+					tabBarIcon: () => <Image source={require("../assets/images/juri-icon.png")} style={styles.icoJuri} />,
 				}}
 			/>
 			<Tabs.Screen
 				name="contact"
 				options={{
 					title: "contact",
-					tabBarIcon: () => (
-						<View>
-							<TouchableOpacity>
-								<Image source={require("../assets/images/contact-icon.png")} style={styles.icoContact} />
-							</TouchableOpacity>
-						</View>
-					),
+					tabBarIcon: () => <Image source={require("../assets/images/contact-icon.png")} style={styles.icoContact} />,
 				}}
 			/>
 			<Tabs.Screen
@@ -123,10 +101,8 @@ const styles = StyleSheet.create({
 	tabBar: {
 		height: 60,
 		backgroundColor: "#FFFFFF",
-		borderTopWidth: 1,
-		borderTopColor: "#E5E5E5",
-		paddingBottom: 5,
-		paddingTop: 5,
+		borderTopWidth: 5,
+		borderTopColor: "#FFF",
 	},
 	tabScreen: {
 		color: "#00A3E9",

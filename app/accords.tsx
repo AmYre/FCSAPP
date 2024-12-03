@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, TextInput } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { decode } from "html-entities";
 import Background from "@/components/background";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const NewsScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
@@ -46,8 +47,8 @@ const NewsScreen = () => {
 	const renderItem = ({ item }) => (
 		<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("post", { post: item })}>
 			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={styles.image} />
-			<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-				{item.title.rendered}
+			<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+				{decode(item.title.rendered.replace(/<[^>]+>/g, ""))}
 			</Text>
 			<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
 				{decode(item.excerpt.rendered.replace(/<[^>]+>/g, ""))}
@@ -67,14 +68,18 @@ const NewsScreen = () => {
 
 	return (
 		<Background>
-			<View style={styles.container}>
-				<TextInput style={styles.searchInput} placeholder="Filtrez et recherchez parmis les accords..." value={searchQuery} onChangeText={setSearchQuery} />
-				{filteredPosts.length > 0 ? (
-					<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
-				) : (
-					<Text style={styles.noResultsText}>Aucun article trouvé</Text>
-				)}
-			</View>
+			<SafeAreaView style={{ flex: 1 }}>
+				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+					<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
+					<View style={styles.container}>
+						{filteredPosts.length > 0 ? (
+							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
+						) : (
+							<Text style={styles.noResultsText}>Aucun article trouvé</Text>
+						)}
+					</View>
+				</KeyboardAvoidingView>
+			</SafeAreaView>
 		</Background>
 	);
 };
