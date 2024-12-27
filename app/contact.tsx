@@ -21,16 +21,18 @@ export default function ContactScreen() {
 			<SafeAreaView style={styles.wrapper}>
 				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
 					<View style={styles.container}>
-						<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
-						<Text style={styles.title}>Contactez-nous</Text>
+						<View style={styles.form}>
+							<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
+							<Text style={styles.title}>Contactez-nous</Text>
 
-						<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
+							<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
 
-						<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
+							<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
 
-						<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-							<Text style={styles.buttonText}>Envoyer</Text>
-						</TouchableOpacity>
+							<TouchableOpacity style={styles.button} onPress={handleSubmit}>
+								<Text style={styles.buttonText}>Envoyer</Text>
+							</TouchableOpacity>
+						</View>
 					</View>
 				</KeyboardAvoidingView>
 			</SafeAreaView>
@@ -46,6 +48,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingHorizontal: 40,
 		justifyContent: "center",
+		alignItems: "center",
+	},
+	form: {
+		width: "100%",
+		maxWidth: 500,
+		paddingHorizontal: 40,
+		alignContent: "center",
+		justifyContent: "center",
+		marginBottom: 40,
 	},
 	logo: {
 		width: 180,

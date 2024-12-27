@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { decode } from "html-entities";
 import Background from "@/components/background";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useWindowDimensions } from "react-native";
 
 const NewsScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
@@ -11,6 +12,8 @@ const NewsScreen = () => {
 	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
 	const navigation = useNavigation();
+	const { width } = useWindowDimensions();
+	const isIpad = width >= 768;
 
 	useEffect(() => {
 		const fetchBlogPosts = async () => {
@@ -46,7 +49,7 @@ const NewsScreen = () => {
 
 	const renderItem = ({ item }) => (
 		<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("post", { post: item })}>
-			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={styles.image} />
+			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={isIpad ? styles.imagePad : styles.image} />
 			<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
 				{item.title.rendered}
 			</Text>
@@ -117,9 +120,26 @@ const styles = StyleSheet.create({
 		elevation: 5,
 		marginBottom: 20,
 	},
+	cardPad: {
+		width: 450,
+		backgroundColor: "#fff",
+		borderRadius: 10,
+		overflow: "hidden",
+		shadowColor: "rgba(0, 0, 0, 0.75)",
+		shadowOffset: { width: 1, height: 2 },
+		shadowOpacity: 0.5,
+		shadowRadius: 10,
+		elevation: 5,
+		marginBottom: 20,
+	},
 	image: {
 		width: "100%",
 		height: 150,
+		resizeMode: "cover",
+	},
+	imagePad: {
+		width: "100%",
+		height: 400,
 		resizeMode: "cover",
 	},
 	title: {

@@ -3,6 +3,7 @@ import { FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useWindowDimensions } from "react-native";
 import Background from "../components/background";
 
 export default function AdhScreen() {
@@ -10,6 +11,8 @@ export default function AdhScreen() {
 		Linking.openURL(url);
 	};
 	const navigation = useNavigation();
+	const { width } = useWindowDimensions();
+	const isIpad = width >= 768;
 
 	return (
 		<Background>
@@ -26,7 +29,7 @@ export default function AdhScreen() {
 						</TouchableOpacity>
 					</View>
 					<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("team")}>
-						<Image source={require("../assets/images/team.jpg")} style={styles.image} />
+						<Image source={require("../assets/images/team.jpg")} style={isIpad ? styles.imagePad : styles.image} />
 						<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
 							Découvrez notre équipe
 						</Text>
@@ -36,7 +39,7 @@ export default function AdhScreen() {
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("branches")}>
-						<Image source={require("../assets/images/branches.jpg")} style={styles.image} />
+						<Image source={require("../assets/images/branches.jpg")} style={isIpad ? styles.imagePad : styles.image} />
 						<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
 							Toutes nos Branches
 						</Text>
@@ -46,7 +49,7 @@ export default function AdhScreen() {
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("accords")}>
-						<Image source={require("../assets/images/accords.jpg")} style={styles.image} />
+						<Image source={require("../assets/images/accords.jpg")} style={isIpad ? styles.imagePad : styles.image} />
 						<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
 							Les accords de Branches
 						</Text>
@@ -125,6 +128,11 @@ const styles = StyleSheet.create({
 	image: {
 		width: "100%",
 		height: 150,
+		resizeMode: "cover",
+	},
+	imagePad: {
+		width: "100%",
+		height: 300,
 		resizeMode: "cover",
 	},
 	title: {

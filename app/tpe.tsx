@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Linking, ScrollView, TextInput, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Background from "@/components/background";
+import { useWindowDimensions } from "react-native";
 
 const TpeScreen = () => {
 	const [name, setName] = useState("");
-	const [email, setEmail] = useState("");
 	const [message, setMessage] = useState("");
+	const { width } = useWindowDimensions();
+	const isIpad = width >= 768;
 
 	const handleSubmit = async () => {
 		const mailtoUrl = `mailto:fcs@unsa.org?subject=Contact&body=Name: ${name}%0D%0AMessage: ${message}`;
@@ -21,19 +23,25 @@ const TpeScreen = () => {
 	return (
 		<Background>
 			<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-				<Image source={require("@/assets/images/tpe.png")} style={styles.image} />
-				<ScrollView contentContainerStyle={styles.scrollContainer}>
+				<ScrollView>
+					<Image source={require("@/assets/images/tpe.png")} style={isIpad ? styles.imagePad : styles.image} />
 					<Text style={styles.mainTitle}>UNSA TPE</Text>
 					<Text style={styles.subTitle}>Du 25 Novembre au 9 Décembre 2024 VOTEZ UNSA</Text>
 					<Text style={styles.description}>
 						À l’UNSA, nous sommes conscients des soucis que peuvent avoir les salariés, tous les salariés. C’est pour ça que nous avons créé UNSA TPE : pour apporter des solutions à
 						plusieurs millions d’employés qui ne bénéficient pas des avantages de ceux qui travaillent dans des grands groupes, comme le CE, ou l’assistance des ressources humaines.
 					</Text>
-					<FontAwesome style={styles.iconPerc} name="percent" />
+					<View style={styles.icos}>
+						<FontAwesome style={styles.iconPerc} name="percent" />
+					</View>
 					<Text style={styles.cta}>Réductions CE exclusives pour sortir voyager, faire du shopping</Text>
-					<FontAwesome5 style={styles.iconBal} name="balance-scale" />
+					<View style={styles.icos}>
+						<FontAwesome5 style={styles.iconBal} name="balance-scale" />
+					</View>
 					<Text style={styles.cta}>Assistance juridique personnalisée</Text>
-					<Ionicons style={styles.iconInfo} name="information" />
+					<View style={styles.icos}>
+						<Ionicons style={styles.iconInfo} name="information" />
+					</View>
 					<Text style={styles.cta}>Informations sur vos droits et leur évolution</Text>
 
 					<View style={styles.form}>
@@ -63,6 +71,11 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		paddingHorizontal: 20,
+	},
+	imagePad: {
+		width: "100%",
+		height: 400,
+		resizeMode: "cover",
 	},
 	image: {
 		width: "100%",
@@ -103,6 +116,13 @@ const styles = StyleSheet.create({
 		paddingRight: 10,
 		paddingLeft: 10,
 		textAlign: "justify",
+	},
+	icos: {
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "center",
+		marginTop: 20,
+		marginBottom: 20,
 	},
 	form: {
 		width: "100%",

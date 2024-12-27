@@ -1,12 +1,16 @@
 import { Video, ResizeMode } from "expo-av";
 import { StyleSheet, View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 const HeaderVideo = () => {
+	const { width } = useWindowDimensions();
+	const isIpad = width >= 768;
+
 	return (
 		<View style={styles.container}>
 			<Video
 				source={require("../assets/videos/unsa.mp4")}
-				style={styles.video}
+				style={isIpad ? styles.videoPad : styles.video}
 				resizeMode={ResizeMode.COVER} // Using the enum value, not a string
 				shouldPlay
 				isLooping
@@ -25,6 +29,10 @@ const styles = StyleSheet.create({
 	video: {
 		width: "100%",
 		height: 300,
+	},
+	videoPad: {
+		width: "100%",
+		height: 600,
 	},
 });
 

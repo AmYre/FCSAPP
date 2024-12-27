@@ -1,7 +1,7 @@
 import { View, ScrollView, TouchableOpacity, Text, Image, ImageBackground, StyleSheet, Linking, Share } from "react-native";
 import { FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-
+import { useWindowDimensions } from "react-native";
 import Background from "../components/background";
 import HeaderVideo from "../components/headerVideo";
 import InterimVideo from "../components/interimVideo";
@@ -13,6 +13,8 @@ export default function HomeScreen() {
 		Linking.openURL(url);
 	};
 	const navigation = useNavigation();
+	const { width } = useWindowDimensions();
+	const isIpad = width >= 768;
 
 	const openShare = async (message) => {
 		try {
@@ -45,47 +47,51 @@ export default function HomeScreen() {
 						<Text style={styles.sectionTitle}>Ne ratez rien de l’actualité</Text>
 						<BlogSlider />
 					</View>
-					<View>
-						<ImageBackground source={require("../assets/images/tpe-section.jpg")} style={styles.imageBackground}>
-							<View style={styles.overlay}>
-								<Text style={styles.imageTitle}>UNSA TPE</Text>
-								<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("tpe")}>
-									<Text style={styles.buttonTPEText}>Je m'informe</Text>
-								</TouchableOpacity>
-							</View>
-						</ImageBackground>
-					</View>
-					<InterimVideo />
-					<View>
-						<ImageBackground source={require("../assets/images/droits.jpg")} style={styles.imageBackground}>
-							<View style={styles.overlay}>
-								<Text style={styles.imageTitle}>VOS DROITS</Text>
-								<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("juri")}>
-									<Text style={styles.buttonTPEText}>Je m'informe</Text>
-								</TouchableOpacity>
-							</View>
-						</ImageBackground>
+					<View style={isIpad ? styles.row : styles.column}>
+						<View style={styles.midSection}>
+							<ImageBackground source={require("../assets/images/tpe-section.jpg")} style={styles.imageBackground}>
+								<View style={styles.overlay}>
+									<Text style={styles.imageTitle}>UNSA TPE</Text>
+									<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("tpe")}>
+										<Text style={styles.buttonTPEText}>Je m'informe</Text>
+									</TouchableOpacity>
+								</View>
+							</ImageBackground>
+						</View>
+						<InterimVideo style={styles.midSection} />
+						<View style={styles.midSection}>
+							<ImageBackground source={require("../assets/images/droits.jpg")} style={styles.imageBackground}>
+								<View style={styles.overlay}>
+									<Text style={styles.imageTitle}>VOS DROITS</Text>
+									<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("juri")}>
+										<Text style={styles.buttonTPEText}>Je m'informe</Text>
+									</TouchableOpacity>
+								</View>
+							</ImageBackground>
+						</View>
 					</View>
 					<View style={styles.sectionSocial}>
 						<Text style={styles.sectionTitleSocial}>Plus fort ensemble !</Text>
-						<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Facebook: https://www.facebook.com/unsa.fcs/")}>
-							<FontAwesome5 style={styles.facebook} name="facebook" size={56} color="white" />
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Instagram: https://www.instagram.com/unsafcs/")}>
-							<FontAwesome5 style={styles.insta} name="instagram" size={56} color="white" />
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => openShare("Découvrez notre application sur LinkedIn: https://www.linkedin.com/in/fatiha-hiraki-775534124/")}>
-							<FontAwesome5 style={styles.linkedin} name="linkedin" size={56} color="white" />
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Twitter: https://x.com/UnsaFcs")}>
-							<FontAwesome5 style={styles.twitter} name="twitter" size={56} color="white" />
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => openShare("Découvrez notre application sur TikTok: https://www.tiktok.com/@fcs.unsa")}>
-							<FontAwesome5 style={styles.tiktok} name="tiktok" size={56} color="white" />
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => openShare("Découvrez notre application sur YouTube: https://www.youtube.com/channel/UCBcaU-snW_BHsJJvwekDHrA")}>
-							<FontAwesome5 style={styles.youtube} name="youtube" size={56} color="white" />
-						</TouchableOpacity>
+						<View style={styles.socials}>
+							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Facebook: https://www.facebook.com/unsa.fcs/")}>
+								<FontAwesome5 style={isIpad ? styles.facebookPad : styles.facebook} name="facebook" size={isIpad ? 80 : 56} color="white" />
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Instagram: https://www.instagram.com/unsafcs/")}>
+								<FontAwesome5 style={isIpad ? styles.instaPad : styles.insta} name="instagram" size={isIpad ? 80 : 56} color="white" />
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur LinkedIn: https://www.linkedin.com/in/fatiha-hiraki-775534124/")}>
+								<FontAwesome5 style={isIpad ? styles.linkedinPad : styles.linkedin} name="linkedin" size={isIpad ? 80 : 56} color="white" />
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Twitter: https://x.com/UnsaFcs")}>
+								<FontAwesome5 style={isIpad ? styles.twitterPad : styles.twitter} name="twitter" size={isIpad ? 80 : 56} color="white" />
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur TikTok: https://www.tiktok.com/@fcs.unsa")}>
+								<FontAwesome5 style={isIpad ? styles.tiktokPad : styles.tiktok} name="tiktok" size={isIpad ? 80 : 56} color="white" />
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur YouTube: https://www.youtube.com/channel/UCBcaU-snW_BHsJJvwekDHrA")}>
+								<FontAwesome5 style={isIpad ? styles.youtubePad : styles.youtube} name="youtube" size={isIpad ? 80 : 56} color="white" />
+							</TouchableOpacity>
+						</View>
 					</View>
 					{/* <View style={styles.sectionPartners}>
 					<Text style={styles.sectionTitle}>Nos Partenaires</Text>
@@ -127,6 +133,15 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
+	row: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+	column: {
+		flexDirection: "column",
+		justifyContent: "space-between",
+		flex: 1,
+	},
 	scrollContainer: {
 		flexGrow: 1,
 		paddingBottom: 50,
@@ -135,6 +150,9 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: 200,
 		resizeMode: "cover",
+	},
+	midSection: {
+		flex: 1,
 	},
 	section: {
 		padding: 16,
@@ -237,7 +255,7 @@ const styles = StyleSheet.create({
 		borderWidth: 2,
 	},
 	buttonTPEText: {
-		fontSize: 18,
+		fontSize: 16,
 		color: "#00A3E9",
 		fontWeight: "bold",
 		textAlign: "center",
@@ -247,8 +265,10 @@ const styles = StyleSheet.create({
 		height: 300,
 	},
 	sectionSocial: {
-		padding: 16,
-		height: 300,
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "center",
 	},
 	sectionTitleSocial: {
 		fontSize: 24,
@@ -257,38 +277,54 @@ const styles = StyleSheet.create({
 		textShadowColor: "rgba(0, 0, 0, 0.55)",
 		textShadowOffset: { width: 1, height: 1 },
 		textShadowRadius: 2,
-		marginTop: 10,
+		marginTop: 30,
+		marginBottom: 50,
 		color: "#FFF",
 	},
+	socials: {
+		position: "relative",
+		justifyContent: "center",
+		flexDirection: "column",
+		alignItems: "center",
+		padding: 16,
+		maxWidth: 600,
+		height: 300,
+	},
 	facebook: {
-		position: "absolute",
-		left: "14%",
-		top: 20,
+		transform: [{ translateX: -120 }, { translateY: 50 }],
 	},
 	insta: {
-		position: "absolute",
-		left: "45%",
-		top: 90,
+		transform: [{ translateX: 0 }, { translateY: 80 }],
 	},
 	linkedin: {
-		position: "absolute",
-		left: "75%",
-		top: 40,
+		transform: [{ translateX: 30 }, { translateY: -90 }],
 	},
 	twitter: {
-		position: "absolute",
-		left: "6%",
-		top: 130,
+		transform: [{ translateX: -130 }, { translateY: 0 }],
 	},
 	tiktok: {
-		position: "absolute",
-		left: "33%",
-		top: 200,
+		transform: [{ translateX: 30 }, { translateY: 20 }],
 	},
 	youtube: {
-		position: "absolute",
-		left: "63%",
-		top: 180,
+		transform: [{ translateX: 130 }, { translateY: -170 }],
+	},
+	facebookPad: {
+		transform: [{ translateX: -120 }, { translateY: 50 }],
+	},
+	instaPad: {
+		transform: [{ translateX: 0 }, { translateY: 80 }],
+	},
+	linkedinPad: {
+		transform: [{ translateX: 130 }, { translateY: -90 }],
+	},
+	twitterPad: {
+		transform: [{ translateX: -130 }, { translateY: 0 }],
+	},
+	tiktokPad: {
+		transform: [{ translateX: 30 }, { translateY: 0 }],
+	},
+	youtubePad: {
+		transform: [{ translateX: 170 }, { translateY: -170 }],
 	},
 	sectionPartners: {
 		marginTop: 20,

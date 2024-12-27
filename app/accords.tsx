@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { decode } from "html-entities";
 import Background from "@/components/background";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useWindowDimensions } from "react-native";
 
 const NewsScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
@@ -11,6 +12,9 @@ const NewsScreen = () => {
 	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
 	const navigation = useNavigation();
+
+	const { width } = useWindowDimensions();
+	const isIpad = width >= 768;
 
 	useEffect(() => {
 		const fetchBlogPosts = async () => {
@@ -45,8 +49,8 @@ const NewsScreen = () => {
 	}, [searchQuery, blogPosts]);
 
 	const renderItem = ({ item }) => (
-		<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("post", { post: item })}>
-			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={styles.image} />
+		<TouchableOpacity style={isIpad ? styles.cardPad : styles.card} onPress={() => navigation.navigate("post", { post: item })}>
+			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={isIpad ? styles.imagePad : styles.image} />
 			<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
 				{decode(item.title.rendered.replace(/<[^>]+>/g, ""))}
 			</Text>
@@ -69,6 +73,8 @@ const NewsScreen = () => {
 	return (
 		<Background>
 			<SafeAreaView style={{ flex: 1 }}>
+				<Image source={require("@/assets/images/accords.jpg")} style={isIpad ? styles.mainImagePad : styles.mainImage} />
+				<Text style={isIpad ? styles.mainTitlePad : styles.mainTitle}>Tous nos accords de branche</Text>
 				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
 					<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
 					<View style={styles.container}>
@@ -89,6 +95,35 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 	},
+	mainImage: {
+		width: "100%",
+		height: 200,
+		resizeMode: "cover",
+	},
+	mainImagePad: {
+		width: "100%",
+		height: 400,
+		resizeMode: "cover",
+	},
+	mainTitle: {
+		fontSize: 24,
+		fontWeight: "bold",
+		color: "#fff",
+		textAlign: "center",
+		marginTop: 10,
+		marginBottom: 10,
+	},
+	mainTitlePad: {
+		fontSize: 34,
+		fontWeight: "bold",
+		textAlign: "center",
+		textShadowColor: "rgba(0, 0, 0, 0.55)",
+		textShadowOffset: { width: 1, height: 1 },
+		textShadowRadius: 2,
+		marginTop: 10,
+		marginBottom: 10,
+		color: "#FFF",
+	},
 	loadingContainer: {
 		flex: 1,
 		justifyContent: "center",
@@ -102,6 +137,8 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		margin: 30,
 		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
+		marginLeft: 100,
+		marginRight: 100,
 	},
 	flatListContent: {
 		paddingBottom: 20,
@@ -118,9 +155,26 @@ const styles = StyleSheet.create({
 		elevation: 5,
 		marginBottom: 20,
 	},
+	cardPad: {
+		width: 500,
+		backgroundColor: "#fff",
+		borderRadius: 10,
+		overflow: "hidden",
+		shadowColor: "rgba(0, 0, 0, 0.75)",
+		shadowOffset: { width: 1, height: 2 },
+		shadowOpacity: 0.5,
+		shadowRadius: 10,
+		elevation: 5,
+		marginBottom: 20,
+	},
 	image: {
 		width: "100%",
 		height: 150,
+		resizeMode: "cover",
+	},
+	imagePad: {
+		width: "100%",
+		height: 300,
 		resizeMode: "cover",
 	},
 	title: {

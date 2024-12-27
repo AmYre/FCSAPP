@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Linking, ScrollView } from "react-native";
 import Background from "@/components/background";
+import { useWindowDimensions } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -160,14 +161,29 @@ const TeamMember = ({ member }) => {
 };
 
 const TeamScreen = () => {
+	const { width } = useWindowDimensions();
+	const isIpad = width >= 768;
 	return (
 		<Background>
 			<SafeAreaView style={{ flex: 1 }}>
+				<Image source={require("@/assets/images/team.jpg")} style={isIpad ? styles.imagePad : styles.image} />
 				<View style={styles.container}>
 					<Text style={styles.mainTitle}>Membres du bureau</Text>
-					<FlatList data={bureauMembers} renderItem={({ item }) => <TeamMember member={item} />} keyExtractor={(item) => item.id} contentContainerStyle={styles.flatListContent} />
+					<FlatList
+						data={bureauMembers}
+						renderItem={({ item }) => <TeamMember member={item} />}
+						keyExtractor={(item) => item.id}
+						contentContainerStyle={styles.flatListContent}
+						horizontal={isIpad}
+					/>
 					<Text style={styles.mainTitle}>Commission administrative</Text>
-					<FlatList data={comMembers} renderItem={({ item }) => <TeamMember member={item} />} keyExtractor={(item) => item.id} contentContainerStyle={styles.flatListContent} />
+					<FlatList
+						data={comMembers}
+						renderItem={({ item }) => <TeamMember member={item} />}
+						keyExtractor={(item) => item.id}
+						contentContainerStyle={styles.flatListContent}
+						horizontal={isIpad}
+					/>
 				</View>
 			</SafeAreaView>
 		</Background>
@@ -185,6 +201,7 @@ const styles = StyleSheet.create({
 	},
 	card: {
 		width: 280,
+		maxHeight: 250,
 		backgroundColor: "#fff",
 		borderRadius: 10,
 		overflow: "hidden",
@@ -198,6 +215,11 @@ const styles = StyleSheet.create({
 	image: {
 		width: "100%",
 		height: 150,
+		resizeMode: "cover",
+	},
+	imagePad: {
+		width: "100%",
+		height: 400,
 		resizeMode: "cover",
 	},
 	mainTitle: {

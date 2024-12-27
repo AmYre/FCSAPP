@@ -10,7 +10,10 @@ import { decode } from "html-entities";
 const PostDetail = () => {
 	const route = useRoute();
 	const { post } = route.params;
+
 	const { width } = useWindowDimensions();
+	const isIpad = width >= 768;
+
 	const wpParse = (content) => {
 		return content
 			.replace(/\\u003C/g, "<")
@@ -81,7 +84,6 @@ const PostDetail = () => {
 			}
 		} catch (error) {
 			console.error("Error sharing:", error);
-			// Fallback to generic share
 			try {
 				await Share.share({
 					message: `${post.title.rendered}\n\n${post.link}`,
@@ -97,8 +99,8 @@ const PostDetail = () => {
 	return (
 		<Background>
 			<ScrollView style={styles.container}>
-				<Image source={{ uri: post.yoast_head_json.og_image[0].url }} style={styles.image} />
-				<Text style={styles.title}>{decode(post.title.rendered)}</Text>
+				<Image source={{ uri: post.yoast_head_json.og_image[0].url }} style={isIpad ? styles.mainImagePad : styles.mainImage} />
+				<Text style={isIpad ? styles.titlePad : styles.title}>{decode(post.title.rendered)}</Text>
 				<View style={styles.content}>
 					<RenderHtml contentWidth={width} source={{ html: processedContent }} tagsStyles={tagsStyles} />
 				</View>
@@ -129,6 +131,16 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingBottom: 30,
 	},
+	mainImage: {
+		width: "100%",
+		height: 200,
+		resizeMode: "cover",
+	},
+	mainImagePad: {
+		width: "100%",
+		height: 400,
+		resizeMode: "cover",
+	},
 	image: {
 		width: "100%",
 		height: 200,
@@ -146,6 +158,20 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 24,
 		paddingVertical: 8,
 		transform: [{ translateY: -34 }],
+		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
+	},
+	titlePad: {
+		fontSize: 24,
+		color: "#272F6B",
+		textTransform: "uppercase",
+		backgroundColor: "#fff",
+		textAlign: "center",
+		borderRadius: 8,
+		fontWeight: "bold",
+		marginHorizontal: 24,
+		paddingHorizontal: 24,
+		paddingVertical: 8,
+		transform: [{ translateY: -40 }],
 		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
 	},
 	content: {

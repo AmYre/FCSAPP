@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, ScrollView, TextInput, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import Background from "@/components/background";
+import { useWindowDimensions } from "react-native";
 
 const SectionScreen = () => {
 	const [name, setName] = useState("");
 	const [message, setMessage] = useState("");
+	const { width } = useWindowDimensions();
+	const isIpad = width >= 768;
 
 	const handleSubmit = async () => {
 		const mailtoUrl = `mailto:fcs@unsa.org?subject=Contact&body=Name: ${name}%0D%0AMessage: ${message}`;
@@ -20,7 +23,7 @@ const SectionScreen = () => {
 		<Background>
 			<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
 				<ScrollView contentContainerStyle={styles.scrollContainer}>
-					<Image source={require("@/assets/images/section.jpg")} style={styles.image} />
+					<Image source={require("@/assets/images/section.jpg")} style={isIpad ? styles.imagePad : styles.image} />
 					<Text style={styles.title}>Ce que la législation permet</Text>
 					<Text style={styles.description}>
 						L’article L.2142-1 du Code du Travail permet de créer une section syndicale à partir de 2 adhérents UNSA sur le périmètre du CSE. Dès la création de la section syndicale,
@@ -72,6 +75,11 @@ const styles = StyleSheet.create({
 		height: 250,
 		resizeMode: "cover",
 	},
+	imagePad: {
+		width: "100%",
+		height: 450,
+		resizeMode: "cover",
+	},
 	title: {
 		fontSize: 18,
 		fontWeight: "bold",
@@ -90,9 +98,11 @@ const styles = StyleSheet.create({
 		paddingRight: 10,
 		paddingLeft: 10,
 		textAlign: "justify",
+		maxWidth: 700,
 	},
 	form: {
 		width: "100%",
+		maxWidth: 500,
 		paddingHorizontal: 40,
 		alignContent: "center",
 		justifyContent: "center",
