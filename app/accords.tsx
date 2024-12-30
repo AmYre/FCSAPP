@@ -6,7 +6,7 @@ import Background from "@/components/background";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 
-const NewsScreen = () => {
+const AccordsScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
 	const [filteredPosts, setFilteredPosts] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
 	},
 	mainImage: {
 		width: "100%",
-		height: 200,
+		height: 150,
 		resizeMode: "cover",
 	},
 	mainImagePad: {
@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
 		color: "#fff",
 		textAlign: "center",
 		marginTop: 10,
-		marginBottom: 10,
 	},
 	mainTitlePad: {
 		fontSize: 34,
@@ -137,8 +136,8 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		margin: 30,
 		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
-		marginLeft: 100,
-		marginRight: 100,
+		marginLeft: "10%",
+		marginRight: "10%",
 	},
 	flatListContent: {
 		paddingBottom: 20,
@@ -203,4 +202,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default NewsScreen;
+export default AccordsScreen;

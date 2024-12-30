@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
 	},
 	flatListContent: {
 		paddingBottom: 20,
+		gap: 20,
 	},
 	card: {
 		width: 280,
@@ -243,6 +244,7 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: "#666",
 		marginHorizontal: 10,
+		paddingBottom: 20,
 		marginBottom: 20,
 		paddingRight: 10,
 		paddingLeft: 10,

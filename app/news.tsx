@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, TextInput } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { decode } from "html-entities";
 import Background from "@/components/background";
@@ -12,6 +12,7 @@ const NewsScreen = () => {
 	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
 	const navigation = useNavigation();
+
 	const { width } = useWindowDimensions();
 	const isIpad = width >= 768;
 
@@ -48,10 +49,10 @@ const NewsScreen = () => {
 	}, [searchQuery, blogPosts]);
 
 	const renderItem = ({ item }) => (
-		<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("post", { post: item })}>
+		<TouchableOpacity style={isIpad ? styles.cardPad : styles.card} onPress={() => navigation.navigate("post", { post: item })}>
 			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={isIpad ? styles.imagePad : styles.image} />
-			<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-				{item.title.rendered}
+			<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+				{decode(item.title.rendered.replace(/<[^>]+>/g, ""))}
 			</Text>
 			<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
 				{decode(item.excerpt.rendered.replace(/<[^>]+>/g, ""))}
@@ -67,12 +68,15 @@ const NewsScreen = () => {
 				</View>
 			</Background>
 		);
-	} else {
-		return (
-			<Background>
-				<SafeAreaView style={{ flex: 1 }}>
-					<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
+	}
 
+	return (
+		<Background>
+			<SafeAreaView style={{ flex: 1 }}>
+				<Image source={require("@/assets/images/medias.jpg")} style={isIpad ? styles.mainImagePad : styles.mainImage} />
+				<Text style={isIpad ? styles.mainTitlePad : styles.mainTitle}>Restez bien informé</Text>
+				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+					<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
 					<View style={styles.container}>
 						{filteredPosts.length > 0 ? (
 							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
@@ -80,16 +84,44 @@ const NewsScreen = () => {
 							<Text style={styles.noResultsText}>Aucun article trouvé</Text>
 						)}
 					</View>
-				</SafeAreaView>
-			</Background>
-		);
-	}
+				</KeyboardAvoidingView>
+			</SafeAreaView>
+		</Background>
+	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
+	},
+	mainImage: {
+		width: "100%",
+		height: 150,
+		resizeMode: "cover",
+	},
+	mainImagePad: {
+		width: "100%",
+		height: 400,
+		resizeMode: "cover",
+	},
+	mainTitle: {
+		fontSize: 24,
+		fontWeight: "bold",
+		color: "#fff",
+		textAlign: "center",
+		marginTop: 10,
+	},
+	mainTitlePad: {
+		fontSize: 34,
+		fontWeight: "bold",
+		textAlign: "center",
+		textShadowColor: "rgba(0, 0, 0, 0.55)",
+		textShadowOffset: { width: 1, height: 1 },
+		textShadowRadius: 2,
+		marginTop: 10,
+		marginBottom: 10,
+		color: "#FFF",
 	},
 	loadingContainer: {
 		flex: 1,
@@ -104,6 +136,8 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		margin: 30,
 		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
+		marginLeft: "10%",
+		marginRight: "10%",
 	},
 	flatListContent: {
 		paddingBottom: 20,
@@ -121,7 +155,7 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 	},
 	cardPad: {
-		width: 450,
+		width: 500,
 		backgroundColor: "#fff",
 		borderRadius: 10,
 		overflow: "hidden",
@@ -139,7 +173,7 @@ const styles = StyleSheet.create({
 	},
 	imagePad: {
 		width: "100%",
-		height: 400,
+		height: 300,
 		resizeMode: "cover",
 	},
 	title: {

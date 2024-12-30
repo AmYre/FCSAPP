@@ -30,10 +30,10 @@ const detail = [
 const services = [
 	{ id: "leaf41", name: "Prévention Sécurité", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005635405" },
 	{ id: "leaf42", name: "Propreté", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000027172335" },
-	{ id: "leaf43", name: "Trvail Temporaire", url: "https://code.travail.gouv.fr/convention-collective/1413-salaries-permanents-des-entreprises-de-travail-temporaire" },
+	{ id: "leaf43", name: "Travail Temporaire", url: "https://code.travail.gouv.fr/convention-collective/1413-salaries-permanents-des-entreprises-de-travail-temporaire" },
 	{ id: "leaf44", name: "Médico Technique", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005636023" },
 	{ id: "leaf45", name: "Quincaillerie", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000047839180" },
-	{ id: "leaf46", name: "Service de l'Automobile", url: "https://code.travail.gouv.fr/convention-collective/1090-services-de-lautomobile-commerce-et-reparation-de-lautomobile-du-cycle" },
+	{ id: "leaf46", name: "Automobile", url: "https://code.travail.gouv.fr/convention-collective/1090-services-de-lautomobile-commerce-et-reparation-de-lautomobile-du-cycle" },
 	{ id: "leaf47", name: "Pompes Funebres", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005635490" },
 	{ id: "leaf48", name: "Désinfection 3D", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005635437" },
 ];
@@ -61,7 +61,7 @@ const BranchesScreen = () => {
 								<View style={styles.nodeContainer}>
 									<TouchableOpacity key={branche.id} style={styles.node} onPress={() => Linking.openURL(branche.url)}>
 										<FontAwesome name="book" size={24} color="#272F6B" />
-										<Text style={styles.nodeText}> CCN {branche.name}</Text>
+										<Text style={isIpad ? styles.nodeTextPad : styles.nodeText}> {branche.name}</Text>
 									</TouchableOpacity>
 								</View>
 							))}
@@ -72,7 +72,7 @@ const BranchesScreen = () => {
 								<View style={styles.nodeContainer}>
 									<TouchableOpacity key={branche.id} style={styles.node} onPress={() => Linking.openURL(branche.url)}>
 										<FontAwesome name="book" size={24} color="#272F6B" />
-										<Text style={styles.nodeText}> CCN {branche.name}</Text>
+										<Text style={isIpad ? styles.nodeTextPad : styles.nodeText}> {branche.name}</Text>
 									</TouchableOpacity>
 								</View>
 							))}
@@ -83,7 +83,7 @@ const BranchesScreen = () => {
 								<View style={styles.nodeContainer}>
 									<TouchableOpacity key={branche.id} style={styles.node} onPress={() => Linking.openURL(branche.url)}>
 										<FontAwesome name="book" size={24} color="#272F6B" />
-										<Text style={styles.nodeText}> CCN {branche.name}</Text>
+										<Text style={isIpad ? styles.nodeTextPad : styles.nodeText}> {branche.name}</Text>
 									</TouchableOpacity>
 								</View>
 							))}
@@ -94,7 +94,7 @@ const BranchesScreen = () => {
 								<View style={styles.nodeContainer}>
 									<TouchableOpacity key={branche.id} style={styles.node} onPress={() => Linking.openURL(branche.url)}>
 										<FontAwesome name="book" size={24} color="#272F6B" />
-										<Text style={styles.nodeText}> CCN {branche.name}</Text>
+										<Text style={isIpad ? styles.nodeTextPad : styles.nodeText}> {branche.name}</Text>
 									</TouchableOpacity>
 								</View>
 							))}
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
 		paddingBottom: 20,
 	},
 	nodeText: {
-		fontSize: 16,
+		fontSize: 12,
 		color: "#272F6B",
 	},
 	nodeTextPad: {

@@ -43,18 +43,19 @@ const TpeScreen = () => {
 						<Ionicons style={styles.iconInfo} name="information" />
 					</View>
 					<Text style={styles.cta}>Informations sur vos droits et leur évolution</Text>
+					<View style={styles.formContainer}>
+						<View style={styles.form}>
+							<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
+							<Text style={styles.titleForm}>Contactez-nous</Text>
 
-					<View style={styles.form}>
-						<Image source={require("../assets/images/unsa-logo.png")} style={styles.logo} />
-						<Text style={styles.titleForm}>Contactez-nous</Text>
+							<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
 
-						<TextInput style={styles.input} placeholder="Votre nom" value={name} onChangeText={setName} />
+							<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
 
-						<TextInput style={[styles.input, styles.textArea]} placeholder="Votre message" value={message} onChangeText={setMessage} multiline numberOfLines={4} />
-
-						<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-							<Text style={styles.buttonText}>Envoyer</Text>
-						</TouchableOpacity>
+							<TouchableOpacity style={styles.button} onPress={handleSubmit}>
+								<Text style={styles.buttonText}>Envoyer</Text>
+							</TouchableOpacity>
+						</View>
 					</View>
 				</ScrollView>
 			</KeyboardAvoidingView>
@@ -124,8 +125,14 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 		marginBottom: 20,
 	},
+	formContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 	form: {
 		width: "100%",
+		maxWidth: 500,
 		paddingHorizontal: 40,
 		alignContent: "center",
 		justifyContent: "center",
