@@ -93,6 +93,12 @@ export default function TabNavigator() {
 					href: null,
 				}}
 			/>
+			<Tabs.Screen
+				name="books"
+				options={{
+					href: null,
+				}}
+			/>
 		</Tabs>
 	);
 }
@@ -102,7 +108,7 @@ const styles = StyleSheet.create({
 		height: 60,
 		backgroundColor: "#FFFFFF",
 		borderTopWidth: 5,
-		borderTopColor: "#FFF",
+		borderColor: "#FFF",
 	},
 	tabScreen: {
 		color: "#00A3E9",

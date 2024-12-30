@@ -24,14 +24,14 @@ const detail = [
 	{ id: "leaf36", name: "Parfumerie", url: "https://code.travail.gouv.fr/convention-collective/3032-parfumerie-esthetique" },
 	{ id: "leaf37", name: "Papeterie", url: "https://code.travail.gouv.fr/convention-collective/1539-papeterie-commerce-de-detail-de-papeterie-fournitures-de-bureau-bureaut" },
 	{ id: "leaf38", name: "Librairie", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000027180935" },
-	{ id: "leaf39", name: "Gérants mandataires", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALITEXT000005640320/" },
+	{ id: "leaf39", name: "Mandataires", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALITEXT000005640320/" },
 ];
 
 const services = [
-	{ id: "leaf41", name: "Prévention Sécurité", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005635405" },
+	{ id: "leaf41", name: "Sécurité", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005635405" },
 	{ id: "leaf42", name: "Propreté", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000027172335" },
-	{ id: "leaf43", name: "Travail Temporaire", url: "https://code.travail.gouv.fr/convention-collective/1413-salaries-permanents-des-entreprises-de-travail-temporaire" },
-	{ id: "leaf44", name: "Médico Technique", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005636023" },
+	{ id: "leaf43", name: "Interim", url: "https://code.travail.gouv.fr/convention-collective/1413-salaries-permanents-des-entreprises-de-travail-temporaire" },
+	{ id: "leaf44", name: "Médical", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005636023" },
 	{ id: "leaf45", name: "Quincaillerie", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000047839180" },
 	{ id: "leaf46", name: "Automobile", url: "https://code.travail.gouv.fr/convention-collective/1090-services-de-lautomobile-commerce-et-reparation-de-lautomobile-du-cycle" },
 	{ id: "leaf47", name: "Pompes Funebres", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005635490" },
@@ -42,7 +42,7 @@ const commerces = [
 	{ id: "leaf11", name: "Coiffure", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000018563755" },
 	{ id: "leaf12", name: "Esthétique", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000027065067" },
 	{ id: "leaf13", name: "Couture Mode", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005635552" },
-	{ id: "leaf14", name: "Fleuristes Animaliers", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005635507" },
+	{ id: "leaf14", name: "Fleuristes", url: "https://www.legifrance.gouv.fr/conv_coll/id/KALICONT000005635507" },
 ];
 
 const BranchesScreen = () => {

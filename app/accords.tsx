@@ -5,6 +5,7 @@ import { decode } from "html-entities";
 import Background from "@/components/background";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 
 const AccordsScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
@@ -76,7 +77,12 @@ const AccordsScreen = () => {
 				<Image source={require("@/assets/images/accords.jpg")} style={isIpad ? styles.mainImagePad : styles.mainImage} />
 				<Text style={isIpad ? styles.mainTitlePad : styles.mainTitle}>Tous nos accords de branche</Text>
 				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-					<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
+					<View style={styles.contain}>
+						<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
+						<View style={styles.bookmark}>
+							<FontAwesome name="heart" style={styles.icoBook} onPress={() => navigation.navigate("books")} />
+						</View>
+					</View>
 					<View style={styles.container}>
 						{filteredPosts.length > 0 ? (
 							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
@@ -128,16 +134,33 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
+	contain: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		gap: 5,
+		margin: 30,
+	},
 	searchInput: {
 		paddingLeft: 30,
 		paddingVertical: 10,
 		color: "rgba(0, 0, 0, 0.65)",
 		borderRadius: 10,
 		backgroundColor: "#fff",
-		margin: 30,
 		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
-		marginLeft: "10%",
-		marginRight: "10%",
+		width: "100%",
+	},
+	bookmark: {
+		position: "absolute",
+		right: 0,
+		padding: 5,
+		backgroundColor: "#fff",
+		borderRadius: 10,
+		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
+	},
+	icoBook: {
+		fontSize: 30,
+		color: "#f00",
 	},
 	flatListContent: {
 		paddingBottom: 20,

@@ -1,13 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { decode } from "html-entities";
 import Background from "@/components/background";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const JuriScreen = () => {
+const fetchBlogPost = async (id) => {
+	try {
+		const response = await fetch(`https://commerces-services.unsa.org/wp-json/wp/v2/posts/${id}`);
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(`Error fetching post ${id}:`, error);
+		return null;
+	}
+};
+
+const fetchAllBlogPosts = async (ids) => {
+	const promises = ids.map((id) => fetchBlogPost(id));
+	const results = await Promise.all(promises);
+	return results.filter((result) => result !== null);
+};
+
+const BooksScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
 	const [filteredPosts, setFilteredPosts] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -17,22 +34,23 @@ const JuriScreen = () => {
 	const { width } = useWindowDimensions();
 	const isIpad = width >= 768;
 
-	useEffect(() => {
-		const fetchBlogPosts = async () => {
-			try {
-				const response = await fetch("https://commerces-services.unsa.org/wp-json/wp/v2/posts?per_page=50&categories=94");
-				const data = await response.json();
-				setBlogPosts(data);
-				setFilteredPosts(data);
-				setLoading(false);
-			} catch (error) {
-				console.error(error);
-				setLoading(false);
-			}
-		};
+	useFocusEffect(
+		useCallback(() => {
+			const fetchPosts = async () => {
+				try {
+					const keys = await AsyncStorage.getAllKeys();
+					const fetchedPosts = await fetchAllBlogPosts(keys);
+					setBlogPosts(fetchedPosts);
+					setFilteredPosts(fetchedPosts);
+					setLoading(false);
+				} catch (error) {
+					console.error("Error fetching posts:", error);
+				}
+			};
 
-		fetchBlogPosts();
-	}, []);
+			fetchPosts();
+		}, [])
+	);
 
 	useEffect(() => {
 		if (searchQuery) {
@@ -74,15 +92,10 @@ const JuriScreen = () => {
 	return (
 		<Background>
 			<SafeAreaView style={{ flex: 1 }}>
-				<Image source={require("@/assets/images/droits.jpg")} style={isIpad ? styles.mainImagePad : styles.mainImage} />
-				<Text style={isIpad ? styles.mainTitlePad : styles.mainTitle}>Dernières infos juridique</Text>
+				<Image source={require("@/assets/images/books.jpg")} style={isIpad ? styles.mainImagePad : styles.mainImage} />
+				<Text style={isIpad ? styles.mainTitlePad : styles.mainTitle}>Vos articles sauvegardés</Text>
 				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-					<View style={styles.contain}>
-						<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
-						<View style={styles.bookmark}>
-							<FontAwesome name="heart" style={styles.icoBook} onPress={() => navigation.navigate("books")} />
-						</View>
-					</View>{" "}
+					<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
 					<View style={styles.container}>
 						{filteredPosts.length > 0 ? (
 							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
@@ -134,44 +147,16 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	searchInputPad: {
-		paddingLeft: 30,
-		paddingVertical: 10,
-		color: "rgba(0, 0, 0, 0.65)",
-		borderRadius: 10,
-		backgroundColor: "#fff",
-		margin: 30,
-		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
-		marginLeft: 100,
-		marginRight: 100,
-	},
-	contain: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		gap: 5,
-		margin: 30,
-	},
 	searchInput: {
 		paddingLeft: 30,
 		paddingVertical: 10,
 		color: "rgba(0, 0, 0, 0.65)",
 		borderRadius: 10,
 		backgroundColor: "#fff",
+		margin: 30,
 		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
-		width: "100%",
-	},
-	bookmark: {
-		position: "absolute",
-		right: 0,
-		padding: 5,
-		backgroundColor: "#fff",
-		borderRadius: 10,
-		boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.25)",
-	},
-	icoBook: {
-		fontSize: 30,
-		color: "#f00",
+		marginLeft: "10%",
+		marginRight: "10%",
 	},
 	flatListContent: {
 		paddingBottom: 20,
@@ -236,4 +221,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default JuriScreen;
+export default BooksScreen;

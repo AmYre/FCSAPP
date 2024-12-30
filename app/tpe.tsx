@@ -11,7 +11,7 @@ const TpeScreen = () => {
 	const isIpad = width >= 768;
 
 	const handleSubmit = async () => {
-		const mailtoUrl = `mailto:fcs@unsa.org?subject=Contact&body=Name: ${name}%0D%0AMessage: ${message}`;
+		const mailtoUrl = `mailto:fcs@unsa.org?subject=Contact&body=Nom : ${name}%0D%0AMessage : ${message}`;
 
 		try {
 			await Linking.openURL(mailtoUrl);

@@ -70,6 +70,16 @@ export default function HomeScreen() {
 							</ImageBackground>
 						</View>
 					</View>
+					<View style={styles.midSection}>
+						<ImageBackground source={require("../assets/images/books.jpg")} style={styles.imageBackground}>
+							<View style={styles.overlay}>
+								<Text style={styles.imageTitle}>VOS ARTICLES</Text>
+								<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("books")}>
+									<Text style={styles.buttonTPEText}>Consulter</Text>
+								</TouchableOpacity>
+							</View>
+						</ImageBackground>
+					</View>
 					<View style={styles.sectionSocial}>
 						<Text style={styles.sectionTitleSocial}>Plus fort ensemble !</Text>
 						<View style={styles.socials}>
@@ -93,6 +103,7 @@ export default function HomeScreen() {
 							</TouchableOpacity>
 						</View>
 					</View>
+
 					{/* <View style={styles.sectionPartners}>
 					<Text style={styles.sectionTitle}>Nos Partenaires</Text>
 					<TouchableOpacity onPress={() => openLink("https://www.malakoffhumanis.com/")}>

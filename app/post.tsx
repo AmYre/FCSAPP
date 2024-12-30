@@ -1,5 +1,6 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Share, Linking, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Share, Linking } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import RenderHtml from "react-native-render-html";
 import { useRoute } from "@react-navigation/native";
 import Background from "../components/background";
@@ -10,6 +11,33 @@ import { decode } from "html-entities";
 const PostDetail = () => {
 	const route = useRoute();
 	const { post } = route.params;
+	const [isLiked, setIsLiked] = useState(false);
+
+	useEffect(() => {
+		const checkLiked = async () => {
+			try {
+				const liked = await AsyncStorage.getItem(`${post.id}`);
+				setIsLiked(liked !== null);
+			} catch (error) {
+				console.error("Error checking liked:", error);
+			}
+		};
+
+		checkLiked();
+	}, [post.id]);
+
+	const toggleLiked = async (liked, id) => {
+		try {
+			if (liked) {
+				await AsyncStorage.removeItem(`${id}`);
+			} else {
+				await AsyncStorage.setItem(`${id}`, "liked");
+			}
+			setIsLiked(!liked);
+		} catch (error) {
+			console.error("Error toggling like:", error);
+		}
+	};
 
 	const { width } = useWindowDimensions();
 	const isIpad = width >= 768;
@@ -101,11 +129,15 @@ const PostDetail = () => {
 			<ScrollView style={styles.container}>
 				<Image source={{ uri: post.yoast_head_json.og_image[0].url }} style={isIpad ? styles.mainImagePad : styles.mainImage} />
 				<Text style={isIpad ? styles.titlePad : styles.title}>{decode(post.title.rendered)}</Text>
+
 				<View style={styles.content}>
 					<RenderHtml contentWidth={width} source={{ html: processedContent }} tagsStyles={tagsStyles} />
 				</View>
 			</ScrollView>
 			<View style={styles.floatingIcons}>
+				<TouchableOpacity style={styles.iconWrapH} onPress={() => toggleLiked(isLiked, post.id)}>
+					{isLiked ? <FontAwesome name="heart" color="#f00" style={styles.iconH} /> : <FontAwesome name="heart" color="#ccc" style={styles.iconH} />}
+				</TouchableOpacity>
 				<TouchableOpacity style={styles.iconWrap} onPress={() => sharePost("facebook")}>
 					<FontAwesome name="facebook" color="#3b5998" style={styles.icon} />
 				</TouchableOpacity>
@@ -193,8 +225,22 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.25)",
 	},
+	iconWrapH: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 10,
+		backgroundColor: "#fff",
+		borderRadius: 100,
+		boxShadow: "2px 2px 5px rgba(0, 0, 0, 0.25)",
+	},
 	icon: {
 		fontSize: 22,
+		padding: 5,
+	},
+	iconH: {
+		fontSize: 22,
+		paddingTop: 6,
 		padding: 5,
 	},
 	iconTK: {
