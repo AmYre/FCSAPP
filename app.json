@@ -27,7 +27,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.FCSAPP"
+      "package": "com.anonymous.FCSAPP",
+      "compileSdkVersion": 35,
+      "targetSdkVersion": 35,
+      "buildToolsVersion": "35.0.0"
     },
     "web": {
       "bundler": "metro",
