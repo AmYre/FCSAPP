@@ -2,7 +2,7 @@
   "expo": {
     "name": "FCSAPP",
     "slug": "FCSAPP",
-    "version": "1.2.6",
+  "version": "1.2.7",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.FCSAPP"
+      "bundleIdentifier": "com.anonymous.FCSAPP",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "permissions": [],
@@ -27,10 +30,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.FCSAPP",
-      "compileSdkVersion": 35,
-      "targetSdkVersion": 35,
-      "buildToolsVersion": "35.0.0"
+      "package": "com.anonymous.FCSAPP"
     },
     "web": {
       "bundler": "metro",

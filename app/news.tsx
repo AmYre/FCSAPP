@@ -11,16 +11,18 @@ const NewsScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
 	const [filteredPosts, setFilteredPosts] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [searching, setSearching] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const navigation = useNavigation();
 
 	const { width } = useWindowDimensions();
 	const isIpad = width >= 768;
 
+	// Chargement initial des articles
 	useEffect(() => {
 		const fetchBlogPosts = async () => {
 			try {
-				const response = await fetch("https://commerces-services.unsa.org/wp-json/wp/v2/posts?per_page=50");
+				const response = await fetch("https://commerces-services.unsa.org/wp-json/wp/v2/posts?per_page=50&_embed");
 				const data = await response.json();
 				setBlogPosts(data);
 				setFilteredPosts(data);
@@ -34,32 +36,62 @@ const NewsScreen = () => {
 		fetchBlogPosts();
 	}, []);
 
+	// Recherche côté serveur avec l'API WordPress
 	useEffect(() => {
-		if (searchQuery) {
-			const filtered = blogPosts.filter(
-				(post) =>
-					post.title.rendered.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					decode(post.excerpt.rendered.replace(/<[^>]+>/g, ""))
-						.toLowerCase()
-						.includes(searchQuery.toLowerCase())
-			);
-			setFilteredPosts(filtered);
-		} else {
-			setFilteredPosts(blogPosts);
-		}
+		const searchPosts = async () => {
+			if (searchQuery.trim()) {
+				setSearching(true);
+				try {
+					// Recherche dans TOUS les articles WordPress avec le paramètre "search"
+					const response = await fetch(
+						`https://commerces-services.unsa.org/wp-json/wp/v2/posts?search=${encodeURIComponent(searchQuery)}&per_page=100&_embed`
+					);
+					const data = await response.json();
+					setFilteredPosts(data);
+				} catch (error) {
+					console.error("Erreur de recherche:", error);
+					setFilteredPosts([]);
+				} finally {
+					setSearching(false);
+				}
+			} else {
+				// Si la recherche est vide, afficher les articles initiaux
+				setFilteredPosts(blogPosts);
+			}
+		};
+
+		// Debounce : attendre 500ms après que l'utilisateur arrête de taper
+		const timeoutId = setTimeout(() => {
+			searchPosts();
+		}, 500);
+
+		return () => clearTimeout(timeoutId);
 	}, [searchQuery, blogPosts]);
 
-	const renderItem = ({ item }) => (
-		<TouchableOpacity style={isIpad ? styles.cardPad : styles.card} onPress={() => navigation.navigate("post", { post: item })}>
-			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={isIpad ? styles.imagePad : styles.image} />
-			<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
-				{decode(item.title.rendered.replace(/<[^>]+>/g, ""))}
-			</Text>
-			<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
-				{decode(item.excerpt.rendered.replace(/<[^>]+>/g, ""))}
-			</Text>
-		</TouchableOpacity>
-	);
+	const renderItem = ({ item }) => {
+		// Vérification de sécurité pour éviter les crashes
+		const imageUrl = item?._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+		const title = item?.title?.rendered ? decode(item.title.rendered.replace(/<[^>]+>/g, "")) : 'Sans titre';
+		const excerpt = item?.excerpt?.rendered ? decode(item.excerpt.rendered.replace(/<[^>]+>/g, "")) : '';
+
+		return (
+			<TouchableOpacity style={isIpad ? styles.cardPad : styles.card} onPress={() => navigation.navigate("post", { post: item })}>
+				{imageUrl ? (
+					<Image source={{ uri: imageUrl }} style={isIpad ? styles.imagePad : styles.image} />
+				) : (
+					<View style={[isIpad ? styles.imagePad : styles.image, { backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center' }]}>
+						<Text style={{ color: '#999', fontSize: 12 }}>Pas d'image</Text>
+					</View>
+				)}
+				<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+					{title}
+				</Text>
+				<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
+					{excerpt}
+				</Text>
+			</TouchableOpacity>
+		);
+	};
 
 	if (loading) {
 		return (
@@ -78,7 +110,13 @@ const NewsScreen = () => {
 				<Text style={isIpad ? styles.mainTitlePad : styles.mainTitle}>Restez bien informé</Text>
 				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
 					<View style={styles.contain}>
-						<TextInput style={styles.searchInput} placeholder="Rechercher..." value={searchQuery} onChangeText={setSearchQuery} />
+						<TextInput
+							style={styles.searchInput}
+							placeholder="Rechercher dans tous les articles..."
+							value={searchQuery}
+							onChangeText={setSearchQuery}
+						/>
+						{searching && <ActivityIndicator size="small" color="#00A3E9" style={styles.searchIndicator} />}
 						<View style={styles.bookmark}>
 							<FontAwesome name="heart" style={styles.icoBook} onPress={() => navigation.navigate("books")} />
 						</View>
@@ -87,7 +125,15 @@ const NewsScreen = () => {
 						{filteredPosts.length > 0 ? (
 							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
 						) : (
-							<Text style={styles.noResultsText}>Aucun article trouvé</Text>
+							<View style={styles.noResultsContainer}>
+								{searching ? (
+									<ActivityIndicator size="large" color="#00A3E9" />
+								) : (
+									<Text style={styles.noResultsText}>
+										{searchQuery ? `Aucun article trouvé pour "${searchQuery}"` : "Aucun article disponible"}
+									</Text>
+								)}
+							</View>
 						)}
 					</View>
 				</KeyboardAvoidingView>
@@ -222,6 +268,17 @@ const styles = StyleSheet.create({
 		fontSize: 22,
 		color: "#fff",
 		textAlign: "center",
+	},
+	noResultsContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		paddingVertical: 40,
+	},
+	searchIndicator: {
+		position: "absolute",
+		right: 60,
+		top: 12,
 	},
 });
 

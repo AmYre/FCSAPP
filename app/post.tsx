@@ -124,10 +124,18 @@ const PostDetail = () => {
 		}
 	};
 
+	const imageUrl = post?._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+
 	return (
 		<Background>
 			<ScrollView style={styles.container}>
-				<Image source={{ uri: post.yoast_head_json.og_image[0].url }} style={isIpad ? styles.mainImagePad : styles.mainImage} />
+				{imageUrl ? (
+					<Image source={{ uri: imageUrl }} style={isIpad ? styles.mainImagePad : styles.mainImage} />
+				) : (
+					<View style={[isIpad ? styles.mainImagePad : styles.mainImage, { backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center' }]}>
+						<Text style={{ color: '#999', fontSize: 14 }}>Pas d'image disponible</Text>
+					</View>
+				)}
 				<Text style={isIpad ? styles.titlePad : styles.title}>{decode(post.title.rendered)}</Text>
 
 				<View style={styles.content}>

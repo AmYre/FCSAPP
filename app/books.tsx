@@ -9,7 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const fetchBlogPost = async (id) => {
 	try {
-		const response = await fetch(`https://commerces-services.unsa.org/wp-json/wp/v2/posts/${id}`);
+		const response = await fetch(`https://commerces-services.unsa.org/wp-json/wp/v2/posts/${id}?_embed`);
 		const data = await response.json();
 		return data;
 	} catch (error) {
@@ -67,17 +67,30 @@ const BooksScreen = () => {
 		}
 	}, [searchQuery, blogPosts]);
 
-	const renderItem = ({ item }) => (
-		<TouchableOpacity style={isIpad ? styles.cardPad : styles.card} onPress={() => navigation.navigate("post", { post: item })}>
-			<Image source={{ uri: item.yoast_head_json.og_image[0].url }} style={isIpad ? styles.imagePad : styles.image} />
-			<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
-				{decode(item.title.rendered.replace(/<[^>]+>/g, ""))}
-			</Text>
-			<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
-				{decode(item.excerpt.rendered.replace(/<[^>]+>/g, ""))}
-			</Text>
-		</TouchableOpacity>
-	);
+	const renderItem = ({ item }) => {
+		// Vérification de sécurité pour éviter les crashes
+		const imageUrl = item?._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+		const title = item?.title?.rendered ? decode(item.title.rendered.replace(/<[^>]+>/g, "")) : 'Sans titre';
+		const excerpt = item?.excerpt?.rendered ? decode(item.excerpt.rendered.replace(/<[^>]+>/g, "")) : '';
+
+		return (
+			<TouchableOpacity style={isIpad ? styles.cardPad : styles.card} onPress={() => navigation.navigate("post", { post: item })}>
+				{imageUrl ? (
+					<Image source={{ uri: imageUrl }} style={isIpad ? styles.imagePad : styles.image} />
+				) : (
+					<View style={[isIpad ? styles.imagePad : styles.image, { backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center' }]}>
+						<Text style={{ color: '#999', fontSize: 12 }}>Pas d'image</Text>
+					</View>
+				)}
+				<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+					{title}
+				</Text>
+				<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
+					{excerpt}
+				</Text>
+			</TouchableOpacity>
+		);
+	};
 
 	if (loading) {
 		return (
