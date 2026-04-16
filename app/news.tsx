@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { decode } from "html-entities";
 import Background from "@/components/background";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { fetchArticles } from "@/utils/parseArticles";
 
 const NewsScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
 	const [filteredPosts, setFilteredPosts] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [searching, setSearching] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const navigation = useNavigation();
 
@@ -22,13 +21,12 @@ const NewsScreen = () => {
 	useEffect(() => {
 		const fetchBlogPosts = async () => {
 			try {
-				const response = await fetch("https://commerces-services.unsa.org/wp-json/wp/v2/posts?per_page=50&_embed");
-				const data = await response.json();
+				const data = await fetchArticles();
 				setBlogPosts(data);
 				setFilteredPosts(data);
-				setLoading(false);
 			} catch (error) {
 				console.error(error);
+			} finally {
 				setLoading(false);
 			}
 		};
@@ -36,58 +34,38 @@ const NewsScreen = () => {
 		fetchBlogPosts();
 	}, []);
 
-	// Recherche côté serveur avec l'API WordPress
+	// Recherche locale dans les articles chargés
 	useEffect(() => {
-		const searchPosts = async () => {
-			if (searchQuery.trim()) {
-				setSearching(true);
-				try {
-					// Recherche dans TOUS les articles WordPress avec le paramètre "search"
-					const response = await fetch(
-						`https://commerces-services.unsa.org/wp-json/wp/v2/posts?search=${encodeURIComponent(searchQuery)}&per_page=100&_embed`
-					);
-					const data = await response.json();
-					setFilteredPosts(data);
-				} catch (error) {
-					console.error("Erreur de recherche:", error);
-					setFilteredPosts([]);
-				} finally {
-					setSearching(false);
-				}
-			} else {
-				// Si la recherche est vide, afficher les articles initiaux
-				setFilteredPosts(blogPosts);
-			}
-		};
-
-		// Debounce : attendre 500ms après que l'utilisateur arrête de taper
-		const timeoutId = setTimeout(() => {
-			searchPosts();
-		}, 500);
-
-		return () => clearTimeout(timeoutId);
+		if (searchQuery.trim()) {
+			const q = searchQuery.toLowerCase();
+			const filtered = blogPosts.filter(
+				(post) =>
+					post.title.toLowerCase().includes(q) ||
+					(post.excerpt || "").toLowerCase().includes(q)
+			);
+			setFilteredPosts(filtered);
+		} else {
+			setFilteredPosts(blogPosts);
+		}
 	}, [searchQuery, blogPosts]);
 
 	const renderItem = ({ item }) => {
-		// Vérification de sécurité pour éviter les crashes
-		const imageUrl = item?._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-		const title = item?.title?.rendered ? decode(item.title.rendered.replace(/<[^>]+>/g, "")) : 'Sans titre';
-		const excerpt = item?.excerpt?.rendered ? decode(item.excerpt.rendered.replace(/<[^>]+>/g, "")) : '';
+		if (!item) return null;
 
 		return (
 			<TouchableOpacity style={isIpad ? styles.cardPad : styles.card} onPress={() => navigation.navigate("post", { post: item })}>
-				{imageUrl ? (
-					<Image source={{ uri: imageUrl }} style={isIpad ? styles.imagePad : styles.image} />
+				{item.imageUrl ? (
+					<Image source={{ uri: item.imageUrl }} style={isIpad ? styles.imagePad : styles.image} />
 				) : (
 					<View style={[isIpad ? styles.imagePad : styles.image, { backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center' }]}>
 						<Text style={{ color: '#999', fontSize: 12 }}>Pas d'image</Text>
 					</View>
 				)}
 				<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
-					{title}
+					{item.title}
 				</Text>
 				<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
-					{excerpt}
+					{item.excerpt}
 				</Text>
 			</TouchableOpacity>
 		);
@@ -116,23 +94,18 @@ const NewsScreen = () => {
 							value={searchQuery}
 							onChangeText={setSearchQuery}
 						/>
-						{searching && <ActivityIndicator size="small" color="#00A3E9" style={styles.searchIndicator} />}
 						<View style={styles.bookmark}>
 							<FontAwesome name="heart" style={styles.icoBook} onPress={() => navigation.navigate("books")} />
 						</View>
 					</View>
 					<View style={styles.container}>
 						{filteredPosts.length > 0 ? (
-							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
+							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id} contentContainerStyle={styles.flatListContent} />
 						) : (
 							<View style={styles.noResultsContainer}>
-								{searching ? (
-									<ActivityIndicator size="large" color="#00A3E9" />
-								) : (
-									<Text style={styles.noResultsText}>
-										{searchQuery ? `Aucun article trouvé pour "${searchQuery}"` : "Aucun article disponible"}
-									</Text>
-								)}
+								<Text style={styles.noResultsText}>
+								{searchQuery ? `Aucun article trouvé pour "${searchQuery}"` : "Aucun article disponible"}
+							</Text>
 							</View>
 						)}
 					</View>

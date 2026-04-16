@@ -1,10 +1,10 @@
-import { View, ScrollView, TouchableOpacity, Text, Image, ImageBackground, StyleSheet, Linking, Share } from "react-native";
-import { FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
+import { View, ScrollView, TouchableOpacity, Text, Image, StyleSheet, Linking } from "react-native";
+import { FontAwesome5, FontAwesome6, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useWindowDimensions } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import Background from "../components/background";
 import HeaderVideo from "../components/headerVideo";
-import InterimVideo from "../components/interimVideo";
 import BlogSlider from "../components/slider";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -16,16 +16,6 @@ export default function HomeScreen() {
 	const { width } = useWindowDimensions();
 	const isIpad = width >= 768;
 
-	const openShare = async (message) => {
-		try {
-			await Share.share({
-				message: message,
-			});
-		} catch (error) {
-			alert(error.message);
-		}
-	};
-
 	return (
 		<Background>
 			<ScrollView contentContainerStyle={styles.scrollContainer} style={styles.container}>
@@ -35,7 +25,7 @@ export default function HomeScreen() {
 							<FontAwesome6 name="hand-fist" size={38} color="white" style={styles.leftIcon} />
 							<Text style={styles.buttonText}>CRÉER SECTION</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={styles.rightButton} onPress={() => openLink("https://commerces-services.unsa.org/adhesion/")}>
+						<TouchableOpacity style={styles.rightButton} onPress={() => openLink("https://adh.unsa-fcs.fr/")}>
 							<FontAwesome5 name="file-signature" size={34} color="white" style={styles.rightIcon} />
 							<Text style={styles.buttonText}>ADHÉSION EN LIGNE</Text>
 						</TouchableOpacity>
@@ -47,93 +37,107 @@ export default function HomeScreen() {
 						<Text style={styles.sectionTitle}>Ne ratez rien de l’actualité</Text>
 						<BlogSlider />
 					</View>
-					<View style={isIpad ? styles.row : styles.column}>
-						<View style={styles.midSection}>
-							<ImageBackground source={require("../assets/images/tpe-section.jpg")} style={styles.imageBackground}>
-								<View style={styles.overlay}>
-									<Text style={styles.imageTitle}>UNSA TPE</Text>
-									<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("tpe")}>
-										<Text style={styles.buttonTPEText}>Je m'informe</Text>
-									</TouchableOpacity>
+
+					{/* Quick Access Cards */}
+					<View style={styles.cardsSection}>
+						<Text style={styles.sectionTitle}>Accès rapide</Text>
+						<View style={styles.cardsGrid}>
+							<TouchableOpacity style={styles.quickCard} onPress={() => navigation.navigate("tpe")} activeOpacity={0.85}>
+								<Image source={require("../assets/images/tpe-section.jpg")} style={styles.quickCardImage} />
+								<LinearGradient colors={["transparent", "rgba(0,0,0,0.8)"]} style={styles.quickCardGradient} />
+								<View style={styles.quickCardContent}>
+									<View style={styles.quickCardIconWrap}>
+										<FontAwesome5 name="store" size={16} color="#fff" />
+									</View>
+									<Text style={styles.quickCardTitle}>UNSA TPE</Text>
+									<Text style={styles.quickCardSub}>Élections & infos TPE</Text>
 								</View>
-							</ImageBackground>
-						</View>
-						<InterimVideo style={styles.midSection} />
-						<View style={styles.midSection}>
-							<ImageBackground source={require("../assets/images/droits.jpg")} style={styles.imageBackground}>
-								<View style={styles.overlay}>
-									<Text style={styles.imageTitle}>VOS DROITS</Text>
-									<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("juri")}>
-										<Text style={styles.buttonTPEText}>Je m'informe</Text>
-									</TouchableOpacity>
+							</TouchableOpacity>
+
+							<TouchableOpacity style={styles.quickCard} onPress={() => navigation.navigate("juri")} activeOpacity={0.85}>
+								<Image source={require("../assets/images/droits.jpg")} style={styles.quickCardImage} />
+								<LinearGradient colors={["transparent", "rgba(0,0,0,0.8)"]} style={styles.quickCardGradient} />
+								<View style={styles.quickCardContent}>
+									<View style={styles.quickCardIconWrap}>
+										<FontAwesome5 name="balance-scale" size={16} color="#fff" />
+									</View>
+									<Text style={styles.quickCardTitle}>Vos Droits</Text>
+									<Text style={styles.quickCardSub}>Infos juridiques</Text>
 								</View>
-							</ImageBackground>
+							</TouchableOpacity>
 						</View>
-					</View>
-					<View style={styles.midSection}>
-						<ImageBackground source={require("../assets/images/books.jpg")} style={styles.imageBackground}>
-							<View style={styles.overlay}>
-								<Text style={styles.imageTitle}>VOS ARTICLES</Text>
-								<TouchableOpacity style={styles.buttonTPE} onPress={() => navigation.navigate("books")}>
-									<Text style={styles.buttonTPEText}>Consulter</Text>
-								</TouchableOpacity>
-							</View>
-						</ImageBackground>
-					</View>
-					<View style={styles.sectionSocial}>
-						<Text style={styles.sectionTitleSocial}>Plus fort ensemble !</Text>
-						<View style={styles.socials}>
-							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Facebook: https://www.facebook.com/unsa.fcs/")}>
-								<FontAwesome5 style={isIpad ? styles.facebookPad : styles.facebook} name="facebook" size={isIpad ? 80 : 56} color="white" />
+
+						<View style={styles.cardsGrid}>
+							<TouchableOpacity style={styles.quickCard} onPress={() => navigation.navigate("books")} activeOpacity={0.85}>
+								<Image source={require("../assets/images/books.jpg")} style={styles.quickCardImage} />
+								<LinearGradient colors={["transparent", "rgba(0,0,0,0.8)"]} style={styles.quickCardGradient} />
+								<View style={styles.quickCardContent}>
+									<View style={styles.quickCardIconWrap}>
+										<FontAwesome5 name="heart" size={16} color="#fff" />
+									</View>
+									<Text style={styles.quickCardTitle}>Mes Articles</Text>
+									<Text style={styles.quickCardSub}>Articles sauvegardés</Text>
+								</View>
 							</TouchableOpacity>
-							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Instagram: https://www.instagram.com/unsafcs/")}>
-								<FontAwesome5 style={isIpad ? styles.instaPad : styles.insta} name="instagram" size={isIpad ? 80 : 56} color="white" />
-							</TouchableOpacity>
-							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur LinkedIn: https://www.linkedin.com/in/fatiha-hiraki-775534124/")}>
-								<FontAwesome5 style={isIpad ? styles.linkedinPad : styles.linkedin} name="linkedin" size={isIpad ? 80 : 56} color="white" />
-							</TouchableOpacity>
-							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur Twitter: https://x.com/UnsaFcs")}>
-								<FontAwesome5 style={isIpad ? styles.twitterPad : styles.twitter} name="twitter" size={isIpad ? 80 : 56} color="white" />
-							</TouchableOpacity>
-							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur TikTok: https://www.tiktok.com/@fcs.unsa")}>
-								<FontAwesome5 style={isIpad ? styles.tiktokPad : styles.tiktok} name="tiktok" size={isIpad ? 80 : 56} color="white" />
-							</TouchableOpacity>
-							<TouchableOpacity onPress={() => openShare("Découvrez notre application sur YouTube: https://www.youtube.com/channel/UCBcaU-snW_BHsJJvwekDHrA")}>
-								<FontAwesome5 style={isIpad ? styles.youtubePad : styles.youtube} name="youtube" size={isIpad ? 80 : 56} color="white" />
+
+							<TouchableOpacity style={styles.quickCard} onPress={() => navigation.navigate("branches")} activeOpacity={0.85}>
+								<Image source={require("../assets/images/branches.jpg")} style={styles.quickCardImage} />
+								<LinearGradient colors={["transparent", "rgba(0,0,0,0.8)"]} style={styles.quickCardGradient} />
+								<View style={styles.quickCardContent}>
+									<View style={styles.quickCardIconWrap}>
+										<FontAwesome5 name="sitemap" size={16} color="#fff" />
+									</View>
+									<Text style={styles.quickCardTitle}>Branches</Text>
+									<Text style={styles.quickCardSub}>Conventions collectives</Text>
+								</View>
 							</TouchableOpacity>
 						</View>
 					</View>
 
-					{/* <View style={styles.sectionPartners}>
-					<Text style={styles.sectionTitle}>Nos Partenaires</Text>
-					<TouchableOpacity onPress={() => openLink("https://www.malakoffhumanis.com/")}>
-						<ImageBackground resizeMode="contain" style={styles.malakoff} source={require("../assets/images/malakoff.jpg")} />
-					</TouchableOpacity>
-					<View style={styles.line1}>
-						<TouchableOpacity style={styles.humanisContainer} onPress={() => openLink("https://www.malakoffhumanis.com/")}>
-							<Image style={styles.humanis} source={require("../assets/images/humanis.jpg")} />
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.ocirpContainer} onPress={() => openLink("https://www.ocirp.fr/")}>
-							<Image style={styles.ocirp} source={require("../assets/images/ocirp.jpg")} />
-						</TouchableOpacity>
+					{/* Contact Banner */}
+					<View style={styles.contactBanner}>
+						<LinearGradient
+							colors={["#00A3E9", "#272F6B"]}
+							start={{ x: 0, y: 0 }}
+							end={{ x: 1, y: 0 }}
+							style={styles.contactGradient}
+						>
+							<FontAwesome5 name="headset" size={28} color="#fff" />
+							<View style={styles.contactText}>
+								<Text style={styles.contactTitle}>Besoin d'aide ?</Text>
+								<Text style={styles.contactSub}>Notre équipe juridique est à votre écoute</Text>
+							</View>
+							<TouchableOpacity style={styles.contactBtn} onPress={() => navigation.navigate("contact")}>
+								<Text style={styles.contactBtnText}>Contacter</Text>
+							</TouchableOpacity>
+						</LinearGradient>
 					</View>
-					<View style={styles.line2}>
-						<TouchableOpacity style={styles.klesiaContainer} onPress={() => openLink("https://www.klesia.fr/")}>
-							<Image style={styles.klesia} source={require("../assets/images/klesia.jpg")} />
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.vyvContainer} onPress={() => openLink("https://www.groupe-vyv.fr/")}>
-							<Image style={styles.vyv} source={require("../assets/images/vyv.jpg")} />
-						</TouchableOpacity>
+
+					{/* Social Section */}
+					<View style={styles.socialSection}>
+						<Text style={styles.sectionTitle}>Rejoignez-nous</Text>
+						<Text style={styles.socialSubtitle}>Suivez l'UNSA FCS sur les réseaux</Text>
+						<View style={styles.socialRow}>
+							{[
+								{ name: "facebook", color: "#1877F2", url: "https://www.facebook.com/unsa.fcs/" },
+								{ name: "instagram", color: "#E4405F", url: "https://www.instagram.com/unsafcs/" },
+								{ name: "linkedin", color: "#0A66C2", url: "https://www.linkedin.com/in/fatiha-hiraki-775534124/" },
+								{ name: "tiktok", color: "#000", url: "https://www.tiktok.com/@fcs.unsa" },
+								{ name: "youtube", color: "#FF0000", url: "https://www.youtube.com/channel/UCBcaU-snW_BHsJJvwekDHrA" },
+							].map((s) => (
+								<TouchableOpacity
+									key={s.name}
+									style={[styles.socialBtn, { backgroundColor: s.color }]}
+									onPress={() => openLink(s.url)}
+									activeOpacity={0.8}
+								>
+									<FontAwesome5 name={s.name} size={20} color="#fff" />
+								</TouchableOpacity>
+							))}
+						</View>
 					</View>
-					<View style={styles.line3}>
-						<TouchableOpacity style={styles.apicilContainer} onPress={() => openLink("https://mon.apicil.com/")}>
-							<Image style={styles.apicil} source={require("../assets/images/apicil.jpg")} />
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.ag2rContainer} onPress={() => openLink("https://www.ag2rlamondiale.fr/")}>
-							<Image style={styles.ag2r} source={require("../assets/images/ag2r.jpg")} />
-						</TouchableOpacity>
-					</View>
-				</View> */}
+
+					<View style={{ height: 30 }} />
 				</SafeAreaView>
 			</ScrollView>
 		</Background>
@@ -144,59 +148,8 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
-	row: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-	},
-	column: {
-		flexDirection: "column",
-		justifyContent: "space-between",
-		flex: 1,
-	},
 	scrollContainer: {
 		flexGrow: 1,
-		paddingBottom: 50,
-	},
-	banner: {
-		width: "100%",
-		height: 200,
-		resizeMode: "cover",
-	},
-	midSection: {
-		flex: 1,
-	},
-	section: {
-		padding: 16,
-	},
-	sectionTitle: {
-		fontSize: 24,
-		fontWeight: "bold",
-		textAlign: "center",
-		textShadowColor: "rgba(0, 0, 0, 0.55)",
-		textShadowOffset: { width: 1, height: 1 },
-		textShadowRadius: 2,
-		marginTop: 10,
-		marginBottom: 10,
-		color: "#FFF",
-	},
-	sectionImage: {
-		width: "100%",
-		height: 150,
-		resizeMode: "cover",
-		borderRadius: 8,
-	},
-	video: {
-		width: "100%",
-		height: 200,
-	},
-	socialLinks: {
-		flexDirection: "row",
-		justifyContent: "space-around",
-		padding: 16,
-	},
-	partners: {
-		padding: 16,
-		alignItems: "center",
 	},
 	buttonContainer: {
 		flexDirection: "row",
@@ -237,181 +190,127 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		fontWeight: "bold",
 	},
-	imageBackground: {
+	section: {
+		padding: 16,
+	},
+	sectionTitle: {
+		fontSize: 22,
+		fontWeight: "800",
+		textAlign: "center",
+		color: "#FFF",
+		marginBottom: 14,
+		letterSpacing: 0.3,
+	},
+	cardsSection: {
+		paddingHorizontal: 12,
+		paddingTop: 10,
+	},
+	cardsGrid: {
+		flexDirection: "row",
+		gap: 10,
+		marginBottom: 10,
+	},
+	quickCard: {
+		flex: 1,
+		height: 160,
+		borderRadius: 14,
+		overflow: "hidden",
+		position: "relative",
+	},
+	quickCardImage: {
 		width: "100%",
-		height: 300,
+		height: "100%",
 		resizeMode: "cover",
 	},
-	overlay: {
-		flex: 1,
-		justifyContent: "space-between",
+	quickCardGradient: {
+		position: "absolute",
+		bottom: 0,
+		left: 0,
+		right: 0,
+		height: "70%",
+	},
+	quickCardContent: {
+		position: "absolute",
+		bottom: 12,
+		left: 12,
+		right: 12,
+	},
+	quickCardIconWrap: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+		backgroundColor: "rgba(0,163,233,0.5)",
 		alignItems: "center",
-		padding: 20,
+		justifyContent: "center",
+		marginBottom: 6,
 	},
-	imageTitle: {
-		color: "#FFF",
-		fontSize: 38,
-		fontWeight: "bold",
-		textShadowColor: "rgba(0, 0, 0, 0.65)",
-		textShadowOffset: { width: 1, height: 1 },
-		textShadowRadius: 5,
-	},
-	buttonTPE: {
-		width: "50%",
-		backgroundColor: "#fff",
-		padding: 10,
-		borderRadius: 5,
-		marginTop: 10,
-		borderColor: "#00A3E9",
-		borderWidth: 2,
-	},
-	buttonTPEText: {
+	quickCardTitle: {
 		fontSize: 16,
-		color: "#00A3E9",
-		fontWeight: "bold",
-		textAlign: "center",
+		fontWeight: "800",
+		color: "#fff",
 	},
-	videoINTERIM: {
-		width: "100%",
-		height: 300,
+	quickCardSub: {
+		fontSize: 12,
+		color: "rgba(255,255,255,0.7)",
+		marginTop: 2,
 	},
-	sectionSocial: {
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	sectionTitleSocial: {
-		fontSize: 24,
-		fontWeight: "bold",
-		textAlign: "center",
-		textShadowColor: "rgba(0, 0, 0, 0.55)",
-		textShadowOffset: { width: 1, height: 1 },
-		textShadowRadius: 2,
-		marginTop: 30,
-		marginBottom: 50,
-		color: "#FFF",
-	},
-	socials: {
-		position: "relative",
-		justifyContent: "center",
-		flexDirection: "column",
-		alignItems: "center",
-		padding: 16,
-		maxWidth: 600,
-		height: 300,
-	},
-	facebook: {
-		transform: [{ translateX: -120 }, { translateY: 50 }],
-	},
-	insta: {
-		transform: [{ translateX: 0 }, { translateY: 80 }],
-	},
-	linkedin: {
-		transform: [{ translateX: 30 }, { translateY: -90 }],
-	},
-	twitter: {
-		transform: [{ translateX: -130 }, { translateY: 0 }],
-	},
-	tiktok: {
-		transform: [{ translateX: 30 }, { translateY: 20 }],
-	},
-	youtube: {
-		transform: [{ translateX: 130 }, { translateY: -170 }],
-	},
-	facebookPad: {
-		transform: [{ translateX: -120 }, { translateY: 50 }],
-	},
-	instaPad: {
-		transform: [{ translateX: 0 }, { translateY: 80 }],
-	},
-	linkedinPad: {
-		transform: [{ translateX: 130 }, { translateY: -90 }],
-	},
-	twitterPad: {
-		transform: [{ translateX: -130 }, { translateY: 0 }],
-	},
-	tiktokPad: {
-		transform: [{ translateX: 30 }, { translateY: 0 }],
-	},
-	youtubePad: {
-		transform: [{ translateX: 170 }, { translateY: -170 }],
-	},
-	sectionPartners: {
+	contactBanner: {
+		marginHorizontal: 12,
 		marginTop: 20,
+		borderRadius: 14,
+		overflow: "hidden",
 	},
-	malakoff: {
-		width: "100%",
-		height: 100,
-		backgroundColor: "#FFF",
-	},
-	humanisContainer: {
-		width: "50%",
-		height: 70,
-	},
-	ocirpContainer: {
-		width: "50%",
-		height: 70,
-	},
-	klesiaContainer: {
-		width: "60%",
-		height: 80,
-	},
-	vyvContainer: {
-		width: "40%",
-		height: 80,
-	},
-	apicilContainer: {
-		width: "45%",
-		height: 70,
-	},
-	ag2rContainer: {
-		width: "55%",
-		height: 70,
-	},
-	humanis: {
-		width: "100%",
-		height: "100%",
-		resizeMode: "contain",
-	},
-	ocirp: {
-		width: "100%",
-		height: "100%",
-		resizeMode: "contain",
-	},
-	klesia: {
-		width: "100%",
-		height: "100%",
-		resizeMode: "contain",
-	},
-	vyv: {
-		width: "100%",
-		height: "100%",
-		resizeMode: "contain",
-	},
-	apicil: {
-		width: "100%",
-		height: "100%",
-		resizeMode: "contain",
-	},
-	ag2r: {
-		width: "100%",
-		height: "100%",
-		resizeMode: "contain",
-	},
-	line1: {
+	contactGradient: {
 		flexDirection: "row",
-		width: "100%",
-		backgroundColor: "#FFF",
+		alignItems: "center",
+		paddingVertical: 18,
+		paddingHorizontal: 18,
+		gap: 14,
 	},
-	line2: {
-		flexDirection: "row",
-		width: "100%",
-		backgroundColor: "#FFF",
+	contactText: {
+		flex: 1,
 	},
-	line3: {
+	contactTitle: {
+		fontSize: 16,
+		fontWeight: "700",
+		color: "#fff",
+	},
+	contactSub: {
+		fontSize: 12,
+		color: "rgba(255,255,255,0.8)",
+		marginTop: 2,
+	},
+	contactBtn: {
+		backgroundColor: "#fff",
+		paddingHorizontal: 16,
+		paddingVertical: 8,
+		borderRadius: 20,
+	},
+	contactBtnText: {
+		fontSize: 13,
+		fontWeight: "700",
+		color: "#272F6B",
+	},
+	socialSection: {
+		alignItems: "center",
+		marginTop: 28,
+		paddingHorizontal: 16,
+	},
+	socialSubtitle: {
+		fontSize: 13,
+		color: "rgba(255,255,255,0.6)",
+		marginBottom: 18,
+		fontStyle: "italic",
+	},
+	socialRow: {
 		flexDirection: "row",
-		width: "100%",
-		backgroundColor: "#FFF",
+		gap: 14,
+	},
+	socialBtn: {
+		width: 48,
+		height: 48,
+		borderRadius: 24,
+		alignItems: "center",
+		justifyContent: "center",
 	},
 });

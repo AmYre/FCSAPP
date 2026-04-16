@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { decode } from "html-entities";
 import Background from "@/components/background";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { fetchArticles } from "@/utils/parseArticles";
 
 const AccordsScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
@@ -20,13 +20,12 @@ const AccordsScreen = () => {
 	useEffect(() => {
 		const fetchBlogPosts = async () => {
 			try {
-				const response = await fetch("https://commerces-services.unsa.org/wp-json/wp/v2/posts?categories=143&_embed");
-				const data = await response.json();
+				const data = await fetchArticles("accords");
 				setBlogPosts(data);
 				setFilteredPosts(data);
-				setLoading(false);
 			} catch (error) {
 				console.error(error);
+			} finally {
 				setLoading(false);
 			}
 		};
@@ -36,12 +35,11 @@ const AccordsScreen = () => {
 
 	useEffect(() => {
 		if (searchQuery) {
+			const q = searchQuery.toLowerCase();
 			const filtered = blogPosts.filter(
 				(post) =>
-					post.title.rendered.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					decode(post.excerpt.rendered.replace(/<[^>]+>/g, ""))
-						.toLowerCase()
-						.includes(searchQuery.toLowerCase())
+					post.title.toLowerCase().includes(q) ||
+					(post.excerpt || "").toLowerCase().includes(q)
 			);
 			setFilteredPosts(filtered);
 		} else {
@@ -50,25 +48,22 @@ const AccordsScreen = () => {
 	}, [searchQuery, blogPosts]);
 
 	const renderItem = ({ item }) => {
-		// Vérification de sécurité pour éviter les crashes
-		const imageUrl = item?._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-		const title = item?.title?.rendered ? decode(item.title.rendered.replace(/<[^>]+>/g, "")) : 'Sans titre';
-		const excerpt = item?.excerpt?.rendered ? decode(item.excerpt.rendered.replace(/<[^>]+>/g, "")) : '';
+		if (!item) return null;
 
 		return (
 			<TouchableOpacity style={isIpad ? styles.cardPad : styles.card} onPress={() => navigation.navigate("post", { post: item })}>
-				{imageUrl ? (
-					<Image source={{ uri: imageUrl }} style={isIpad ? styles.imagePad : styles.image} />
+				{item.imageUrl ? (
+					<Image source={{ uri: item.imageUrl }} style={isIpad ? styles.imagePad : styles.image} />
 				) : (
 					<View style={[isIpad ? styles.imagePad : styles.image, { backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center' }]}>
 						<Text style={{ color: '#999', fontSize: 12 }}>Pas d'image</Text>
 					</View>
 				)}
 				<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
-					{title}
+					{item.title}
 				</Text>
 				<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
-					{excerpt}
+					{item.excerpt}
 				</Text>
 			</TouchableOpacity>
 		);
@@ -98,7 +93,7 @@ const AccordsScreen = () => {
 					</View>
 					<View style={styles.container}>
 						{filteredPosts.length > 0 ? (
-							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.flatListContent} />
+							<FlatList data={filteredPosts} renderItem={renderItem} keyExtractor={(item) => item.id} contentContainerStyle={styles.flatListContent} />
 						) : (
 							<Text style={styles.noResultsText}>Aucun article trouvé</Text>
 						)}

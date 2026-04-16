@@ -1,28 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { decode } from "html-entities";
 import Background from "@/components/background";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const fetchBlogPost = async (id) => {
-	try {
-		const response = await fetch(`https://commerces-services.unsa.org/wp-json/wp/v2/posts/${id}?_embed`);
-		const data = await response.json();
-		return data;
-	} catch (error) {
-		console.error(`Error fetching post ${id}:`, error);
-		return null;
-	}
-};
-
-const fetchAllBlogPosts = async (ids) => {
-	const promises = ids.map((id) => fetchBlogPost(id));
-	const results = await Promise.all(promises);
-	return results.filter((result) => result !== null);
-};
 
 const BooksScreen = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
@@ -36,30 +18,36 @@ const BooksScreen = () => {
 
 	useFocusEffect(
 		useCallback(() => {
-			const fetchPosts = async () => {
+			const loadSavedPosts = async () => {
 				try {
 					const keys = await AsyncStorage.getAllKeys();
-					const fetchedPosts = await fetchAllBlogPosts(keys);
-					setBlogPosts(fetchedPosts);
-					setFilteredPosts(fetchedPosts);
-					setLoading(false);
+					const savedKeys = keys.filter((k) => k.startsWith("saved_"));
+					const entries = await AsyncStorage.multiGet(savedKeys);
+					const posts = entries
+						.map(([, value]) => {
+							try { return JSON.parse(value); } catch { return null; }
+						})
+						.filter(Boolean);
+					setBlogPosts(posts);
+					setFilteredPosts(posts);
 				} catch (error) {
-					console.error("Error fetching posts:", error);
+					console.error("Error loading saved posts:", error);
+				} finally {
+					setLoading(false);
 				}
 			};
 
-			fetchPosts();
+			loadSavedPosts();
 		}, [])
 	);
 
 	useEffect(() => {
 		if (searchQuery) {
+			const q = searchQuery.toLowerCase();
 			const filtered = blogPosts.filter(
 				(post) =>
-					post.title.rendered.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					decode(post.excerpt.rendered.replace(/<[^>]+>/g, ""))
-						.toLowerCase()
-						.includes(searchQuery.toLowerCase())
+					post.title.toLowerCase().includes(q) ||
+					(post.excerpt || "").toLowerCase().includes(q)
 			);
 			setFilteredPosts(filtered);
 		} else {
@@ -68,25 +56,22 @@ const BooksScreen = () => {
 	}, [searchQuery, blogPosts]);
 
 	const renderItem = ({ item }) => {
-		// Vérification de sécurité pour éviter les crashes
-		const imageUrl = item?._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-		const title = item?.title?.rendered ? decode(item.title.rendered.replace(/<[^>]+>/g, "")) : 'Sans titre';
-		const excerpt = item?.excerpt?.rendered ? decode(item.excerpt.rendered.replace(/<[^>]+>/g, "")) : '';
+		if (!item) return null;
 
 		return (
 			<TouchableOpacity style={isIpad ? styles.cardPad : styles.card} onPress={() => navigation.navigate("post", { post: item })}>
-				{imageUrl ? (
-					<Image source={{ uri: imageUrl }} style={isIpad ? styles.imagePad : styles.image} />
+				{item.imageUrl ? (
+					<Image source={{ uri: item.imageUrl }} style={isIpad ? styles.imagePad : styles.image} />
 				) : (
 					<View style={[isIpad ? styles.imagePad : styles.image, { backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center' }]}>
 						<Text style={{ color: '#999', fontSize: 12 }}>Pas d'image</Text>
 					</View>
 				)}
 				<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
-					{title}
+					{item.title}
 				</Text>
 				<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
-					{excerpt}
+					{item.excerpt}
 				</Text>
 			</TouchableOpacity>
 		);

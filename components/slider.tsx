@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, Linking } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { decode } from "html-entities";
+import { fetchArticles } from "@/utils/parseArticles";
 
 const BlogSlider = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
@@ -12,21 +12,14 @@ const BlogSlider = () => {
 		const fetchBlogPosts = async () => {
 			try {
 				console.log("🔄 Chargement des posts...");
-				const response = await fetch("https://commerces-services.unsa.org/wp-json/wp/v2/posts?_embed");
+				const articles = await fetchArticles();
+				console.log(`✅ ${articles.length} posts chargés`);
 
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
+				if (articles.length > 0) {
+					console.log("🔍 Premier post:", articles[0].title);
 				}
 
-				const data = await response.json();
-				console.log(`✅ ${data.length} posts chargés`);
-
-				if (data.length > 0) {
-					console.log("🔍 Premier post:", data[0]?.title?.rendered);
-					console.log("🔍 Featured media:", data[0]?._embedded?.['wp:featuredmedia']?.[0]?.source_url);
-				}
-
-				setBlogPosts(data);
+				setBlogPosts(articles);
 				setLoading(false);
 			} catch (error) {
 				console.error("❌ Erreur lors du chargement des posts:", error);
@@ -38,31 +31,23 @@ const BlogSlider = () => {
 	}, []);
 
 	const renderItem = ({ item }) => {
-		// Vérification de sécurité pour éviter les crashes
-		const imageUrl = item?._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-		const title = item?.title?.rendered ? decode(item.title.rendered.replace(/<[^>]+>/g, "")) : 'Sans titre';
-		const excerpt = item?.excerpt?.rendered ? decode(item.excerpt.rendered.replace(/<[^>]+>/g, "")) : '';
-
-		// Debug: log pour voir si l'item est défini
-		if (!item) {
-			console.log("⚠️ Item undefined dans renderItem");
-			return null;
-		}
+		if (!item) return null;
 
 		return (
 			<TouchableOpacity style={styles.card} onPress={() => navigation.navigate("post", { post: item })}>
-				{imageUrl ? (
-					<Image source={{ uri: imageUrl }} style={styles.image} />
+				{item.imageUrl ? (
+					<Image source={{ uri: item.imageUrl }} style={styles.image} />
 				) : (
 					<View style={[styles.image, { backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center' }]}>
 						<Text style={{ color: '#999', fontSize: 12 }}>Pas d'image</Text>
 					</View>
 				)}
-				<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-					{title}
+				<Text style={styles.date}>{item.date}</Text>
+				<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+					{item.title}
 				</Text>
 				<Text style={styles.description} numberOfLines={5} ellipsizeMode="tail">
-					{excerpt}
+					{item.excerpt}
 				</Text>
 			</TouchableOpacity>
 		);
@@ -89,7 +74,7 @@ const BlogSlider = () => {
 		<FlatList
 			data={blogPosts}
 			renderItem={renderItem}
-			keyExtractor={(item) => item?.id?.toString() || Math.random().toString()}
+			keyExtractor={(item) => item.id}
 			horizontal
 			showsHorizontalScrollIndicator={false}
 			contentContainerStyle={styles.slider}
@@ -117,6 +102,19 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: 150,
 		resizeMode: "cover",
+	},
+	date: {
+		fontSize: 12,
+		fontWeight: "bold",
+		color: "#fff",
+		backgroundColor: "#00A3E9",
+		alignSelf: "flex-start",
+		paddingHorizontal: 10,
+		paddingVertical: 4,
+		borderRadius: 5,
+		marginLeft: 10,
+		marginTop: 10,
+		overflow: "hidden",
 	},
 	title: {
 		fontSize: 18,

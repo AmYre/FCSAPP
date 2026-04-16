@@ -23,7 +23,7 @@ export default function AdhScreen() {
 							<FontAwesome6 name="hand-fist" size={38} color="white" style={styles.leftIcon} />
 							<Text style={styles.buttonText}>CRÉER SECTION</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={styles.rightButton} onPress={() => openLink("https://commerces-services.unsa.org/adhesion/")}>
+						<TouchableOpacity style={styles.rightButton} onPress={() => openLink("https://adh.unsa-fcs.fr/")}>
 							<FontAwesome5 name="file-signature" size={34} color="white" style={styles.rightIcon} />
 							<Text style={styles.buttonText}>ADHÉSION EN LIGNE</Text>
 						</TouchableOpacity>
